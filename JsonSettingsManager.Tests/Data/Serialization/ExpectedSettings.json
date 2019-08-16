@@ -1,0 +1,9 @@
+﻿{
+    "Title": "Hello",
+    "Users": {
+        "@LoadFrom": "Users"
+    },
+    "Roles": {
+        "@LoadFrom": "Roles"
+    }
+}

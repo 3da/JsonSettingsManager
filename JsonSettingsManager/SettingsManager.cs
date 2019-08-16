@@ -140,11 +140,5 @@ namespace JsonSettingsManager
 			return result;
 		}
 
-		public T LoadSettings2<T>(string path)
-		{
-			var obj = JObject.Parse(File.ReadAllText(path));
-
-			return obj.ToObject<T>();
-		}
 	}
 }
