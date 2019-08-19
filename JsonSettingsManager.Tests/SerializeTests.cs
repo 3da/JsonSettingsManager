@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using JsonSettingsManager.DataSources;
 using JsonSettingsManager.Serialization;
 using JsonSettingsManager.Serialization.Attributes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -23,23 +26,45 @@ namespace JsonSettingsManager.Tests
 
             [ToExternal(Path = "Roles")]
             public string[] Roles { get; set; }
+
+            [ToExternal(Path = "Data", Mode = LoadMode.Bin)]
+            public byte[] Data { get; set; }
+
+            [ToExternal(Path = "Text", Mode = LoadMode.Text)]
+            public string Text { get; set; }
+
+            [ToExternal(Path = "Lines", Mode = LoadMode.Lines)]
+            public string[] Lines { get; set; }
         }
 
-        private void CompareJsons(string path1, string path2)
+        public static void CompareJsons(string path1, string path2)
         {
             Assert.IsTrue(JToken.DeepEquals(JToken.Parse(File.ReadAllText(path1)), JToken.Parse(File.ReadAllText(path2))));
 
         }
 
+        public static void CompareBytes(string path1, string path2)
+        {
+            Assert.IsTrue(File.ReadAllBytes(path1).SequenceEqual(File.ReadAllBytes(path2)));
+        }
+
+        private Settings _settings = new Settings()
+        {
+            Title = "Hello",
+            Roles = new[] { "Admin", "User", "Guest" },
+            Users = new[] { "John", "Jane", "Jet" },
+            Lines = new[] { "zxc", "123", "..." },
+            Text = @"M
+u
+l
+t
+i",
+            Data = new byte[] { 0, 1, 2, 3, 4, 5 }
+        };
+
         [TestMethod]
         public void TestSerializeJson()
         {
-            var settings = new Settings()
-            {
-                Title = "Hello",
-                Roles = new[] { "Admin", "User", "Guest" },
-                Users = new[] { "John", "Jane", "Jet" }
-            };
 
             var serializer = new SettingsSerializer();
 
@@ -50,20 +75,66 @@ namespace JsonSettingsManager.Tests
                 Thread.Sleep(100);
             }
 
-            serializer.SaveJson(settings, @"Tmp\settings.json");
+            serializer.SaveJson(_settings, @"Tmp\settings.json");
 
             Assert.IsTrue(File.Exists(@"Tmp\settings.json"));
             Assert.IsTrue(File.Exists(@"Tmp\Users.json"));
             Assert.IsTrue(File.Exists(@"Tmp\Roles.json"));
+            Assert.IsTrue(File.Exists(@"Tmp\Data.bin"));
+            Assert.IsTrue(File.Exists(@"Tmp\Text.txt"));
+            Assert.IsTrue(File.Exists(@"Tmp\Lines.txt"));
 
             CompareJsons(@"Data\Serialization\ExpectedSettings.json", @"Tmp\settings.json");
             CompareJsons(@"Data\Serialization\Users.json", @"Tmp\Users.json");
             CompareJsons(@"Data\Serialization\Roles.json", @"Tmp\Roles.json");
+            CompareBytes(@"Data\Serialization\Data.bin", @"Tmp\Data.bin");
+            CompareBytes(@"Data\Serialization\Text.txt", @"Tmp\Text.txt");
+            CompareBytes(@"Data\Serialization\Lines.txt", @"Tmp\Lines.txt");
 
             var manager = new SettingsManager();
-            var loadedSettings = manager.LoadSettings(@"Tmp\settings").ToObject<Settings>();
 
-            Assert.AreEqual(JsonConvert.SerializeObject(settings), JsonConvert.SerializeObject(loadedSettings));
+            var jsonSettings = manager.LoadSettings(@"Tmp\settings");
+            var typedSettings = jsonSettings.ToObject<Settings>();
+
+            Assert.AreEqual(JsonConvert.SerializeObject(_settings), JsonConvert.SerializeObject(typedSettings));
+        }
+
+        [TestMethod]
+        public void TestSerializeZip()
+        {
+            var serializer = new SettingsSerializer();
+
+            serializer.SaveZip(_settings, @"Tmp.zip");
+
+            var tmpDir = new DirectoryInfo("Tmp");
+            if (tmpDir.Exists)
+            {
+                tmpDir.Delete(true);
+                Thread.Sleep(100);
+            }
+
+            ZipFile.ExtractToDirectory("Tmp.zip", "Tmp");
+
+            Assert.IsTrue(File.Exists(@"Tmp\Main.json"));
+            Assert.IsTrue(File.Exists(@"Tmp\Users.json"));
+            Assert.IsTrue(File.Exists(@"Tmp\Roles.json"));
+            Assert.IsTrue(File.Exists(@"Tmp\Data.bin"));
+            Assert.IsTrue(File.Exists(@"Tmp\Text.txt"));
+            Assert.IsTrue(File.Exists(@"Tmp\Lines.txt"));
+
+            CompareJsons(@"Data\Serialization\Main.json", @"Tmp\Main.json");
+            CompareJsons(@"Data\Serialization\Users.json", @"Tmp\Users.json");
+            CompareJsons(@"Data\Serialization\Roles.json", @"Tmp\Roles.json");
+            CompareBytes(@"Data\Serialization\Data.bin", @"Tmp\Data.bin");
+            CompareBytes(@"Data\Serialization\Text.txt", @"Tmp\Text.txt");
+            CompareBytes(@"Data\Serialization\Lines.txt", @"Tmp\Lines.txt");
+
+            var manager = new SettingsManager();
+
+            var jsonSettings = manager.LoadSettings(@"Tmp.zip");
+            var typedSettings = jsonSettings.ToObject<Settings>();
+
+            Assert.AreEqual(JsonConvert.SerializeObject(_settings), JsonConvert.SerializeObject(typedSettings));
         }
     }
 }

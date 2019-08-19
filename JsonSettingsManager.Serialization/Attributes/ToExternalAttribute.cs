@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JsonSettingsManager.DataSources;
 
 namespace JsonSettingsManager.Serialization.Attributes
 {
@@ -8,5 +7,7 @@ namespace JsonSettingsManager.Serialization.Attributes
     public class ToExternalAttribute : Attribute
     {
         public string Path { get; set; }
+
+        public LoadMode Mode { get; set; }
     }
 }

@@ -1,10 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using JsonSettingsManager.DataSources;
 using JsonSettingsManager.Serialization.Attributes;
+using JsonSettingsManager.TypeResolving;
 using Newtonsoft.Json;
 
 namespace JsonSettingsManager.Serialization
@@ -13,56 +19,108 @@ namespace JsonSettingsManager.Serialization
     {
         public void SaveZip(object obj, string path)
         {
+            using (var stream = File.Create(path))
+            using (var archive = new ZipArchive(stream, ZipArchiveMode.Create))
+            {
+                var context = new SerializationContext(new ZipEntryWriter(archive, new Uri(Directory.GetCurrentDirectory() + "\\")))
+                {
+                    GlobalContext = new GlobalContext()
+                };
+
+                context.SaveExternal += SaveExternal;
+
+                SaveExternal(context, new FileInfo("Main.json").FullName, LoadMode.Json, obj);
+
+                context.SaveExternal -= SaveExternal;
+            }
 
         }
-
 
 
         public void SaveJson(object obj, string path)
         {
-            var type = obj.GetType();
+            var context = new SerializationContext(new FileSystemWriter())
+            {
+                GlobalContext = new GlobalContext()
+            };
 
-            var props = type.GetProperties()
-                .Where(q => q.GetMethod.IsPublic && q.GetCustomAttribute(typeof(JsonIgnoreAttribute)) == null)
-                .ToArray();
-
-
-            var context = new SerializationContext();
             context.SaveExternal += SaveExternal;
 
-            SaveExternal(context, path, obj);
+            SaveExternal(context, path, LoadMode.Json, obj);
 
             context.SaveExternal -= SaveExternal;
         }
 
-        private void SaveExternal(SerializationContext context, string path, object value)
+        static void SaveExternal(SerializationContext context, string path, LoadMode mode, object value)
         {
-            var fi = new FileInfo(path);
-            if (fi.Extension.Length == 0)
-                path = path + ".json";
+            var newPath = path;
 
-
-
-            fi = new FileInfo(path);
+            var fi = new FileInfo(newPath);
 
             var dir = fi.Directory;
 
             if (!dir.Exists)
                 dir.Create();
 
-            var newContext = new SerializationContext()
+            var newContext = new SerializationContext(context.Writer)
             {
-                WorkDir = dir.FullName
+                WorkDir = dir.FullName,
+                GlobalContext = context.GlobalContext
             };
 
             newContext.SaveExternal += SaveExternal;
 
-            var text = JsonConvert.SerializeObject(value, Formatting.Indented, new JsonSerializerSettings()
+            var serializer = JsonSerializer.Create(new JsonSerializerSettings()
             {
-                ContractResolver = new MySolver(newContext)
+                ContractResolver = new MySolver(newContext),
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters = new List<JsonConverter>()
+                {
+                    new JsonImplConverter()
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                Formatting = Formatting.Indented
             });
 
-            File.WriteAllText(path, text);
+            switch (mode)
+            {
+                case LoadMode.Json:
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        var streamWriter = new StreamWriter(memoryStream);
+                        serializer.Serialize(streamWriter, value);
+                        streamWriter.Flush();
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+                        context.Writer.Write(newPath, memoryStream);
+                    }
+                    break;
+                case LoadMode.Text:
+                    using (var stream = new MemoryStream(Encoding.UTF8.GetBytes((string)value)))
+                        context.Writer.Write(newPath, stream);
+                    break;
+                case LoadMode.Bin:
+                    using (var stream = new MemoryStream((byte[])value))
+                        context.Writer.Write(newPath, stream);
+                    break;
+                case LoadMode.Lines:
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        var streamWriter = new StreamWriter(memoryStream);
+                        foreach (string s in (IEnumerable<string>)value)
+                        {
+                            streamWriter.WriteLine(s);
+                        }
+                        streamWriter.Flush();
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+                        context.Writer.Write(newPath, memoryStream);
+
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+            }
+
+
 
             newContext.SaveExternal -= SaveExternal;
         }

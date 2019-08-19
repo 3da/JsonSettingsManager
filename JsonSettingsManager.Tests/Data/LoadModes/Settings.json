@@ -1,0 +1,29 @@
+﻿{
+    "Binary": {
+        "@LoadFrom": {
+            "DataSource": {
+                "@Name": "FileDataSource",
+                "Path": "Binary.bin"
+            },
+            "Mode": "Bin"
+        }
+    },
+    "Lines": {
+        "@LoadFrom": {
+            "DataSource": {
+                "@Name": "FileDataSource",
+                "Path": "Lines.txt"
+            },
+            "Mode": "Lines"
+        }
+    },
+    "Text": {
+        "@LoadFrom": {
+            "DataSource": {
+                "@Name": "FileDataSource",
+                "Path": "MultilineText.txt"
+            },
+            "Mode": "Text"
+        }
+    }
+}

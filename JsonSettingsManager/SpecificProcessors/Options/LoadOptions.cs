@@ -6,6 +6,8 @@ namespace JsonSettingsManager.SpecificProcessors.Options
 	{
 		public IDataSource DataSource { get; set; }
 
+        public LoadMode Mode { get; set; }
+
 		public void FillFromString(string str)
 		{
 			DataSource = new FileDataSource()

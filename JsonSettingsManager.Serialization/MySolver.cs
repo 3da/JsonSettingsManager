@@ -25,7 +25,7 @@ namespace JsonSettingsManager.Serialization
             var externalAttr = member.GetCustomAttribute(typeof(ToExternalAttribute)) as ToExternalAttribute;
 
             if (externalAttr != null)
-                prop.Converter = new ExternalJsonConverter(externalAttr.Path, _context);
+                prop.Converter = new ExternalJsonConverter(externalAttr.Path, externalAttr.Mode, _context);
 
             return prop;
         }

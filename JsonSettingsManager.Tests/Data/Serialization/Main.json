@@ -3,7 +3,7 @@
     "Users": {
         "@LoadFrom": {
             "DataSource": {
-                "@Name": "FileDataSource",
+                "@Name": "ZipDataSource",
                 "Path": "Users.json"
             },
             "Mode": "Json"
@@ -12,7 +12,7 @@
     "Roles": {
         "@LoadFrom": {
             "DataSource": {
-                "@Name": "FileDataSource",
+                "@Name": "ZipDataSource",
                 "Path": "Roles.json"
             },
             "Mode": "Json"
@@ -21,7 +21,7 @@
     "Data": {
         "@LoadFrom": {
             "DataSource": {
-                "@Name": "FileDataSource",
+                "@Name": "ZipDataSource",
                 "Path": "Data.bin"
             },
             "Mode": "Bin"
@@ -30,7 +30,7 @@
     "Text": {
         "@LoadFrom": {
             "DataSource": {
-                "@Name": "FileDataSource",
+                "@Name": "ZipDataSource",
                 "Path": "Text.txt"
             },
             "Mode": "Text"
@@ -39,7 +39,7 @@
     "Lines": {
         "@LoadFrom": {
             "DataSource": {
-                "@Name": "FileDataSource",
+                "@Name": "ZipDataSource",
                 "Path": "Lines.txt"
             },
             "Mode": "Lines"

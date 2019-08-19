@@ -1,0 +1,13 @@
+﻿{
+    "@Name": "Human",
+    "Items": [
+        { "@Name": "Dog" },
+        {
+            "@Name": "Human",
+            "Items": [
+                { "@Name": "Dog" },
+                { "@Name": "Dog" }
+            ]
+        }
+    ]
+}

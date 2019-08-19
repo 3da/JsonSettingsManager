@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using JsonSettingsManager.DataSources;
 using JsonSettingsManager.SpecificProcessors.Options;
 using Newtonsoft.Json.Linq;
 
@@ -30,7 +31,7 @@ namespace JsonSettingsManager.SpecificProcessors
 				};
 
 				var mergePath = option.DataSource;
-				var otherObj = context.Manager.LoadSettings(mergePath, context) as JObject;
+				var otherObj = context.Manager.LoadSettings(mergePath, context, LoadMode.Json) as JObject;
 
 				if (otherObj == null)
 					throw new Exception($"Merge path {mergePath} must be JObject");

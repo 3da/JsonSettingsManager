@@ -13,7 +13,7 @@ namespace JsonSettingsManager.Tests
 			var settingsManager = new SettingsManager();
 
 			var settings = settingsManager.LoadSettings(actualPath);
-
+            
 			var expectedSettings = JToken.Parse(File.ReadAllText(expectedPath));
 
 			Assert.IsTrue(JToken.DeepEquals(expectedSettings, settings));

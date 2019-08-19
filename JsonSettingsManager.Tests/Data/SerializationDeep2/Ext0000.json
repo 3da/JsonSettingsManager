@@ -1,0 +1,12 @@
+﻿{
+    "Field": "Value2",
+    "ExternalBin": {
+        "@LoadFrom": {
+            "DataSource": {
+                "@Name": "FileDataSource",
+                "Path": "Data0001.bin"
+            },
+            "Mode": "Bin"
+        }
+    }
+}

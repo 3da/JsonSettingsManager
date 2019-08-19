@@ -1,0 +1,21 @@
+﻿{
+    "Field": "Value",
+    "ExternalBin": {
+        "@LoadFrom": {
+            "DataSource": {
+                "@Name": "ZipDataSource",
+                "Path": "Data0002.bin"
+            },
+            "Mode": "Bin"
+        }
+    },
+    "ExternalJson": {
+        "@LoadFrom": {
+            "DataSource": {
+                "@Name": "ZipDataSource",
+                "Path": "Ext0000.json"
+            },
+            "Mode": "Json"
+        }
+    }
+}
