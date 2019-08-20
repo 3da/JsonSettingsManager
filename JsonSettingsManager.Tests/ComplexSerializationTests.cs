@@ -59,9 +59,13 @@ namespace JsonSettingsManager.Tests
 
             var manager = new SettingsManager();
 
-            var loadedData = manager.LoadSettings<Human>("TmpResult.json");
+            var loadedData = manager.LoadSettings<IUnit>("TmpResult.json");
 
             Assert.AreEqual(JsonConvert.SerializeObject(data), JsonConvert.SerializeObject(loadedData));
+
+            var loadedData2 = manager.LoadSettings<Human>("TmpResult.json");
+
+            Assert.AreEqual(JsonConvert.SerializeObject(data), JsonConvert.SerializeObject(loadedData2));
         }
 
 
