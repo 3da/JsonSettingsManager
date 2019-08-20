@@ -72,9 +72,31 @@ namespace JsonSettingsManager
                 return LoadSettingsJson(path, workDir);
         }
 
+        public T LoadSettings<T>(string path, string workDir = null)
+        {
+            var fi = new FileInfo(path);
+            if (fi.Extension == ".zip")
+                return LoadSettingsZip<T>(path, workDir);
+            else
+                return LoadSettingsJson<T>(path, workDir);
+        }
+
         public JToken LoadSettingsJson(string path, string workDir = null)
         {
             return LoadSettings(new FileDataSource() { Path = path, WorkDir = workDir });
+        }
+
+        public T LoadSettingsJson<T>(string path, string workDir = null)
+        {
+            var token = LoadSettingsJson(path, workDir);
+
+            return token.ToObject<T>(JsonSerializer.Create(new JsonSerializerSettings()
+            {
+                Converters = new List<JsonConverter>()
+                {
+                    new JsonImplConverter()
+                }
+            }));
         }
 
         public JToken LoadSettingsZip(string path, string workDir = null)
@@ -84,6 +106,19 @@ namespace JsonSettingsManager
             {
                 return LoadSettings(new ZipDataSource() { Path = "Main.json", ZipArchive = archive });
             }
+        }
+
+        public T LoadSettingsZip<T>(string path, string workDir = null)
+        {
+            var token = LoadSettingsZip(path, workDir);
+
+            return token.ToObject<T>(JsonSerializer.Create(new JsonSerializerSettings()
+            {
+                Converters = new List<JsonConverter>()
+                {
+                    new JsonImplConverter()
+                }
+            }));
         }
 
         private JToken ProcessJToken(JToken jToken, ParseContext context)

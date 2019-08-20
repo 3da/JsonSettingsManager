@@ -45,7 +45,7 @@ namespace JsonSettingsManager.TypeResolving
                 .Where(p => objectType.IsAssignableFrom(p))
                 : AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(s => s.GetTypes())
-                    .Where(t => t.IsSubclassOf(objectType));
+                    .Where(t => t.IsSubclassOf(objectType) || objectType == t);
 
             JObject jObject = JObject.Load(reader);
 

@@ -9,6 +9,7 @@ using JsonSettingsManager.Serialization;
 using JsonSettingsManager.Serialization.Attributes;
 using JsonSettingsManager.TypeResolving;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 
 namespace JsonSettingsManager.Tests
 {
@@ -55,6 +56,12 @@ namespace JsonSettingsManager.Tests
             serializer.SaveJson(data, "TmpResult.json");
 
             SerializeTests.CompareJsons(@"Data\SerializationDeep\ExpectedSettings.json", "TmpResult.json");
+
+            var manager = new SettingsManager();
+
+            var loadedData = manager.LoadSettings<Human>("TmpResult.json");
+
+            Assert.AreEqual(JsonConvert.SerializeObject(data), JsonConvert.SerializeObject(loadedData));
         }
 
 
@@ -94,7 +101,7 @@ namespace JsonSettingsManager.Tests
             var serializer = new SettingsSerializer();
 
             serializer.SaveJson(_settings, @"Tmp\settings.json");
-            
+
             SerializeTests.CompareJsons(@"Data\SerializationDeep2\ExpectedSettings.json", @"Tmp\settings.json");
             SerializeTests.CompareJsons(@"Data\SerializationDeep2\Ext0000.json", @"Tmp\Ext0000.json");
             SerializeTests.CompareBytes(@"Data\SerializationDeep2\Data0001.bin", @"Tmp\Data0001.bin");
