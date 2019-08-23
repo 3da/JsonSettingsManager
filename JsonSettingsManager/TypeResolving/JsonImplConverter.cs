@@ -27,24 +27,53 @@ namespace JsonSettingsManager.TypeResolving
                 ["@Name"] = typeName
             };
 
+
+
             foreach (var prop in contract.Properties)
             {
                 var propValue = prop.ValueProvider.GetValue(value);
                 if (propValue != null)
-                    resultObj[prop.PropertyName] = JToken.FromObject(propValue, serializer);
+                {
+                    if (prop.Converter != null)
+                    {
+                        var writer1 = resultObj.CreateWriter();
+                        writer1.WritePropertyName(prop.PropertyName);
+                        prop.Converter.WriteJson(writer1, propValue, serializer);
+                    }
+                    else
+                    {
+                        resultObj[prop.PropertyName] = JToken.FromObject(propValue, serializer);
+                    }
+
+                }
             }
 
             serializer.Serialize(writer, resultObj);
         }
 
+        private static IList<Type> GetTypes()
+        {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            return assemblies.SelectMany(q =>
+            {
+                try
+                {
+                    return q.GetTypes();
+                }
+                catch
+                {
+                    return Enumerable.Empty<Type>();
+                }
+            }).ToArray();
+        }
+
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var types = objectType.IsInterface
-                ? AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(s => s.GetTypes())
-                .Where(p => objectType.IsAssignableFrom(p))
-                : AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(s => s.GetTypes())
+                ? GetTypes()
+                    .Where(p => objectType.IsAssignableFrom(p))
+                : GetTypes()
                     .Where(t => t.IsSubclassOf(objectType) || objectType == t);
 
             JObject jObject = JObject.Load(reader);
