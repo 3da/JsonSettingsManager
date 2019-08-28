@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.MongoDb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSettingsManager.Serialization", "JsonSettingsManager.Serialization\JsonSettingsManager.Serialization.csproj", "{4B54DB44-F8DC-4F38-8583-512314A2D3DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSettingsManager.DocumentationLib", "JsonSettingsManager.DocumentationLib\JsonSettingsManager.DocumentationLib.csproj", "{19F131E4-7E44-426A-BEE3-561D6C1052EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSettingsManager.DocumentationLib.Tests", "JsonSettingsManager.DocumentationLib.Tests\JsonSettingsManager.DocumentationLib.Tests.csproj", "{67D84038-3948-4892-8E25-7A62F6667924}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{4B54DB44-F8DC-4F38-8583-512314A2D3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B54DB44-F8DC-4F38-8583-512314A2D3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B54DB44-F8DC-4F38-8583-512314A2D3DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19F131E4-7E44-426A-BEE3-561D6C1052EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19F131E4-7E44-426A-BEE3-561D6C1052EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19F131E4-7E44-426A-BEE3-561D6C1052EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19F131E4-7E44-426A-BEE3-561D6C1052EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67D84038-3948-4892-8E25-7A62F6667924}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67D84038-3948-4892-8E25-7A62F6667924}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67D84038-3948-4892-8E25-7A62F6667924}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67D84038-3948-4892-8E25-7A62F6667924}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
