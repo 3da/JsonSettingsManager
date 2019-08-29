@@ -9,7 +9,7 @@ namespace JsonSettingsManager.DataSources
     public class HttpDataSource : IDataSource
     {
         public string Uri { get; set; }
-        public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode)
+        public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context)
         {
             if (mode != LoadMode.Json)
                 throw new NotImplementedException();

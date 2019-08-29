@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
@@ -14,7 +15,7 @@ namespace JsonSettingsManager.DataSources
 
         public Encoding Encoding { get; set; }
 
-        public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode)
+        public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context)
         {
             if (lastDataSource is FileDataSource f)
             {

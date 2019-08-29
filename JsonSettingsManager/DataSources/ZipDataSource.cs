@@ -18,7 +18,7 @@ namespace JsonSettingsManager.DataSources
 
         public Encoding Encoding { get; set; }
 
-        public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode)
+        public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context)
         {
             if (lastDataSource is ZipDataSource f)
             {
@@ -26,10 +26,22 @@ namespace JsonSettingsManager.DataSources
                 Encoding = Encoding ?? f.Encoding;
             }
 
+
             if (Encoding == null)
                 Encoding = Encoding.UTF8;
 
-            var entry = ZipArchive.GetEntry(Path);
+            ZipArchiveEntry entry;
+
+            if (ZipArchive == null)
+            {
+                var stream = File.OpenRead(Path);
+                ZipArchive = new ZipArchive(stream);
+
+                entry = ZipArchive.GetEntry("Main.json");
+            }
+            else
+                entry = ZipArchive.GetEntry(Path);
+
             using (var stream = entry.Open())
             {
                 string text = null;

@@ -36,7 +36,7 @@ namespace JsonSettingsManager
                 throw new ArgumentNullException(nameof(context));
 
             JToken jToken;
-            (jToken, dataSource) = dataSource.Load(context.DataSource, mode);
+            (jToken, dataSource) = dataSource.Load(context.DataSource, mode, context);
 
             return ProcessJToken(jToken, new ParseContext
             {

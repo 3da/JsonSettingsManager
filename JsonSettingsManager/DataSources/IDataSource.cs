@@ -7,6 +7,6 @@ namespace JsonSettingsManager.DataSources
 	[ResolveType]
 	public interface IDataSource
 	{
-		(JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode);
+		 (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context);
 	}
 }

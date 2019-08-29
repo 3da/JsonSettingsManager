@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace JsonSettingsManager
 {
-	internal class ParseContext
+	public class ParseContext
 	{
 		public IDataSource DataSource { get; set; }
 		public bool MergeArray { get; set; }
