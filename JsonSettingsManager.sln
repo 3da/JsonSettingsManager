@@ -9,11 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.MongoDb", "JsonSettingsManager.MongoDb\JsonSettingsManager.MongoDb.csproj", "{16EDB392-A637-4426-9929-E582EE0C38B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSettingsManager.Serialization", "JsonSettingsManager.Serialization\JsonSettingsManager.Serialization.csproj", "{4B54DB44-F8DC-4F38-8583-512314A2D3DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.Serialization", "JsonSettingsManager.Serialization\JsonSettingsManager.Serialization.csproj", "{4B54DB44-F8DC-4F38-8583-512314A2D3DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSettingsManager.DocumentationLib", "JsonSettingsManager.DocumentationLib\JsonSettingsManager.DocumentationLib.csproj", "{19F131E4-7E44-426A-BEE3-561D6C1052EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.DocumentationLib", "JsonSettingsManager.DocumentationLib\JsonSettingsManager.DocumentationLib.csproj", "{19F131E4-7E44-426A-BEE3-561D6C1052EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSettingsManager.DocumentationLib.Tests", "JsonSettingsManager.DocumentationLib.Tests\JsonSettingsManager.DocumentationLib.Tests.csproj", "{67D84038-3948-4892-8E25-7A62F6667924}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.DocumentationLib.Tests", "JsonSettingsManager.DocumentationLib.Tests\JsonSettingsManager.DocumentationLib.Tests.csproj", "{67D84038-3948-4892-8E25-7A62F6667924}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSettingsManager.Templating", "JsonSettingsManager.Templating\JsonSettingsManager.Templating.csproj", "{8EC1C1AC-3CFF-4789-B8FA-C2D740CAA0A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{67D84038-3948-4892-8E25-7A62F6667924}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67D84038-3948-4892-8E25-7A62F6667924}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67D84038-3948-4892-8E25-7A62F6667924}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EC1C1AC-3CFF-4789-B8FA-C2D740CAA0A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EC1C1AC-3CFF-4789-B8FA-C2D740CAA0A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EC1C1AC-3CFF-4789-B8FA-C2D740CAA0A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EC1C1AC-3CFF-4789-B8FA-C2D740CAA0A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

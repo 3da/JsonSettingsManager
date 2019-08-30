@@ -1,0 +1,18 @@
+﻿{
+    "Hello": {
+        "@Condition": {
+            "If": "SomeVariable == 6",
+            "Then": {
+                "A": {
+                    "@Condition": {
+                        "If": "AnotherVariable == 0",
+                        "Then": "B"
+                    }
+                }
+            },
+            "Else": "None"
+        }
+    },
+    "City": { "@Eval": "SomeVariable * 3" },
+    "Country": "Kazakhstan"
+}

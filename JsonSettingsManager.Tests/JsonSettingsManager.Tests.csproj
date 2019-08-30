@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\JsonSettingsManager.MongoDb\JsonSettingsManager.MongoDb.csproj" />
     <ProjectReference Include="..\JsonSettingsManager.Serialization\JsonSettingsManager.Serialization.csproj" />
+    <ProjectReference Include="..\JsonSettingsManager.Templating\JsonSettingsManager.Templating.csproj" />
     <ProjectReference Include="..\JsonSettingsManager\JsonSettingsManager.csproj" />
   </ItemGroup>
 
@@ -117,6 +118,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Serialization\ExpectedSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Templating\ExpectedSettings3.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Templating\ExpectedSettings2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Templating\ExpectedSettings1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Templating\Settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\TwoTrees\ExpectedSettings.json">

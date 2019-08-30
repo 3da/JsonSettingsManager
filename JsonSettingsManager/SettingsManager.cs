@@ -16,7 +16,7 @@ namespace JsonSettingsManager
         private readonly List<ISpecificProcessor> _specialProcessors;
 
 
-        public SettingsManager()
+        public SettingsManager(params ISpecificProcessor[] processors)
         {
             _specialProcessors = new List<ISpecificProcessor>
             {
@@ -27,7 +27,7 @@ namespace JsonSettingsManager
                 new UnionArrayProcessor(),
                 new ExceptArrayProcessor(),
 
-            };
+            }.Concat(processors).ToList();
         }
 
         internal JToken LoadSettings(IDataSource dataSource, ParseContext context, LoadMode mode)
@@ -90,6 +90,11 @@ namespace JsonSettingsManager
         {
             var token = LoadSettingsJson(path, workDir);
 
+            return LoadSettings<T>(token);
+        }
+
+        public T LoadSettings<T>(JToken token)
+        {
             return token.ToObject<T>(JsonSerializer.Create(new JsonSerializerSettings()
             {
                 Converters = new List<JsonConverter>()
@@ -112,13 +117,7 @@ namespace JsonSettingsManager
         {
             var token = LoadSettingsZip(path, workDir);
 
-            return token.ToObject<T>(JsonSerializer.Create(new JsonSerializerSettings()
-            {
-                Converters = new List<JsonConverter>()
-                {
-                    new JsonImplConverter()
-                }
-            }));
+            return LoadSettings<T>(token);
         }
 
         private JToken ProcessJToken(JToken jToken, ParseContext context)
