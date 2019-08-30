@@ -5,5 +5,5 @@
         "line 2",
         "line 3"
     ],
-    "Text": "This\r\nis\r\nMultiline\r\nText"
+    "Text": "This\nis\nMultiline\nText"
 }
