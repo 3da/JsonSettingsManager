@@ -27,7 +27,9 @@ namespace JsonSettingsManager
                 new UnionArrayProcessor(),
                 new ExceptArrayProcessor(),
 
-            }.Concat(processors).ToList();
+            };
+
+            _specialProcessors.AddRange(processors);
         }
 
         internal JToken LoadSettings(IDataSource dataSource, ParseContext context, LoadMode mode)

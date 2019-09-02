@@ -48,6 +48,11 @@ namespace JsonSettingsManager.Tests
             Assert.IsTrue(File.ReadAllBytes(path1).SequenceEqual(File.ReadAllBytes(path2)));
         }
 
+        public static void CompareLines(string path1, string path2)
+        {
+            Assert.IsTrue(File.ReadAllLines(path1).SequenceEqual(File.ReadAllLines(path2)));
+        }
+
         private Settings _settings = new Settings()
         {
             Title = "Hello",
@@ -89,7 +94,7 @@ i",
             CompareJsons(@"Data\Serialization\Roles.json", @"Tmp\Roles.json");
             CompareBytes(@"Data\Serialization\Data.bin", @"Tmp\Data.bin");
             CompareBytes(@"Data\Serialization\Text.txt", @"Tmp\Text.txt");
-            CompareBytes(@"Data\Serialization\Lines.txt", @"Tmp\Lines.txt");
+            CompareLines(@"Data\Serialization\Lines.txt", @"Tmp\Lines.txt");
 
             var manager = new SettingsManager();
 
@@ -127,7 +132,7 @@ i",
             CompareJsons(@"Data\Serialization\Roles.json", @"Tmp\Roles.json");
             CompareBytes(@"Data\Serialization\Data.bin", @"Tmp\Data.bin");
             CompareBytes(@"Data\Serialization\Text.txt", @"Tmp\Text.txt");
-            CompareBytes(@"Data\Serialization\Lines.txt", @"Tmp\Lines.txt");
+            CompareLines(@"Data\Serialization\Lines.txt", @"Tmp\Lines.txt");
 
             var manager = new SettingsManager();
 
