@@ -6,13 +6,13 @@ using Newtonsoft.Json;
 namespace JsonSettingsManager.DocumentationLib.Tests
 {
     [TestClass]
-    public class UnitTest1
+    public class SimpleTests
     {
         private IList<MemberInfo> TestDocumentationForType(object obj, MemberInfo expected)
         {
             var manager = new DocumentationManager();
 
-            var documentation = manager.Generate(obj);
+            var documentation = manager.GenerateForObjects(obj);
 
 
             Assert.AreEqual(JsonConvert.SerializeObject(expected, Formatting.Indented), JsonConvert.SerializeObject(documentation[0], Formatting.Indented));
@@ -20,33 +20,53 @@ namespace JsonSettingsManager.DocumentationLib.Tests
             return documentation;
         }
 
+        public class ClassWithEnum
+        {
+            public MyEnum EnumProperty { get; set; }
+        }
+
         [TestMethod]
         public void TestEnum()
         {
-            TestDocumentationForType(typeof(MyEnum), new EnumInfo()
+
+
+            TestDocumentationForType(new ClassWithEnum { EnumProperty = MyEnum.Hello }, new MemberInfo()
             {
-                Name = nameof(MyEnum),
-                Type = nameof(MyEnum),
-                Items = new List<MemberInfo>()
+                MemberType = MemberType.Class,
+                Name = nameof(ClassWithEnum),
+                Type = nameof(ClassWithEnum),
+                Children = new List<MemberInfo>()
                 {
-                    new MemberInfo()
-                    {
-                        Name = "Hello",
-                        Type = "int",
-                        Value = "0",
-                    },
-                    new MemberInfo()
-                    {
-                        Name = "World",
-                        Type = "int",
-                        Value = "1",
-                    },
-                    new MemberInfo()
-                    {
-                        Name = "ZXCVB",
-                        Type = "int",
-                        Value = "2",
-                    }
+                   new MemberInfo()
+                   {
+                       MemberType = MemberType.Enum,
+                       Name = "EnumProperty",
+                       Type = nameof(MyEnum),
+                       Implementations = new List<MemberInfo>()
+                       {
+                           new MemberInfo()
+                           {
+                               MemberType = MemberType.Primitive,
+                               Name = "Hello",
+                               Type = "int",
+                               Value = "0",
+                           },
+                           new MemberInfo()
+                           {
+                               MemberType = MemberType.Primitive,
+                               Name = "World",
+                               Type = "int",
+                               Value = "1",
+                           },
+                           new MemberInfo()
+                           {
+                               MemberType = MemberType.Primitive,
+                               Name = "ZXCVB",
+                               Type = "int",
+                               Value = "2",
+                           }
+                       }
+                   }
                 }
             });
         }
@@ -54,18 +74,10 @@ namespace JsonSettingsManager.DocumentationLib.Tests
         [TestMethod]
         public void TestArray()
         {
-            TestDocumentationForType(typeof(byte[]), new MemberInfo()
+            TestDocumentationForType(new byte[0], new MemberInfo()
             {
                 Name = "Byte[]",
-                Type = "byte[]",
-                Items = new List<MemberInfo>()
-                {
-                    new MemberInfo()
-                    {
-                        Name = "Item",
-                        Type = "byte"
-                    }
-                }
+                Type = "byte[]"
             });
         }
 
@@ -74,30 +86,35 @@ namespace JsonSettingsManager.DocumentationLib.Tests
         {
             TestDocumentationForType(new SubSettings(), new MemberInfo()
             {
+                MemberType = MemberType.Class,
                 Name = "SubSettings",
                 Type = "SubSettings",
-                Items = new List<MemberInfo>()
+                Children = new List<MemberInfo>()
                 {
                     new MemberInfo()
                     {
+                        MemberType = MemberType.Enum,
                         Name = "MyEnum",
                         Type = "MyEnum",
-                        Items = new List<MemberInfo>()
+                        Implementations = new List<MemberInfo>()
                         {
                             new MemberInfo()
                             {
+                                MemberType = MemberType.Primitive,
                                 Name = "Hello",
                                 Type = "int",
                                 Value = "0",
                             },
                             new MemberInfo()
                             {
+                                MemberType = MemberType.Primitive,
                                 Name = "World",
                                 Type = "int",
                                 Value = "1",
                             },
                             new MemberInfo()
                             {
+                                MemberType = MemberType.Primitive,
                                 Name = "ZXCVB",
                                 Type = "int",
                                 Value = "2",
@@ -106,9 +123,10 @@ namespace JsonSettingsManager.DocumentationLib.Tests
                     },
                     new MemberInfo()
                     {
+                        MemberType = MemberType.Array,
                         Name = "StrArray",
                         Type = "string[]",
-                        Items = new List<MemberInfo>()
+                        Children = new List<MemberInfo>()
                         {
                              new MemberInfo()
                              {
@@ -125,38 +143,44 @@ namespace JsonSettingsManager.DocumentationLib.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            var expected = new ClassInfo()
+            var expected = new MemberInfo()
             {
+                MemberType = MemberType.Class,
                 Name = "Settings",
                 Type = "Settings",
-                Items = new List<MemberInfo>()
+                Children = new List<MemberInfo>()
                 {
-                    new ClassInfo()
+                    new MemberInfo()
                     {
+                        MemberType = MemberType.Class,
                         Name = "SubSettings",
                         Type = "SubSettings",
-                        Items = new List<MemberInfo>()
+                        Children = new List<MemberInfo>()
                         {
                             new MemberInfo()
                             {
+                                MemberType = MemberType.Enum,
                                 Name = "MyEnum",
                                 Type = "MyEnum",
-                                Items = new List<MemberInfo>()
+                                Implementations = new List<MemberInfo>()
                                 {
                                     new MemberInfo()
                                     {
+                                        MemberType = MemberType.Primitive,
                                         Name = "Hello",
                                         Type = "int",
                                         Value = "0",
                                     },
                                     new MemberInfo()
                                     {
+                                        MemberType = MemberType.Primitive,
                                         Name = "World",
                                         Type = "int",
                                         Value = "1",
                                     },
                                     new MemberInfo()
                                     {
+                                        MemberType = MemberType.Primitive,
                                         Name = "ZXCVB",
                                         Type = "int",
                                         Value = "2",
@@ -165,12 +189,14 @@ namespace JsonSettingsManager.DocumentationLib.Tests
                             },
                             new MemberInfo()
                             {
+                                MemberType = MemberType.Array,
                                 Name = "StrArray",
                                 Type = "string[]",
-                                Items = new List<MemberInfo>()
+                                Children = new List<MemberInfo>()
                                 {
                                     new MemberInfo()
                                     {
+                                        MemberType = MemberType.Primitive,
                                         Name = "Item",
                                         Type = "string"
                                     }
@@ -180,25 +206,29 @@ namespace JsonSettingsManager.DocumentationLib.Tests
                     },
                     new MemberInfo()
                     {
+                        MemberType = MemberType.Primitive,
                         Name = "Number",
                         Type = "decimal",
                     },
                     new MemberInfo()
                     {
+                        MemberType = MemberType.Primitive,
                         Name = "Str",
                         Type = "string"
                     },
                     new MemberInfo()
                     {
+                        MemberType = MemberType.Array,
                         Name = "MyEnums",
                         Type = "MyEnum[]",
-                        Items = new List<MemberInfo>()
+                        Children = new List<MemberInfo>()
                         {
-                            new EnumInfo()
+                            new MemberInfo()
                             {
+                                MemberType = MemberType.Enum,
                                 Name = "Item",
                                 Type = "MyEnum",
-                                Items = new List<MemberInfo>()
+                                Implementations = new List<MemberInfo>()
                                 {
                                     new MemberInfo()
                                     {

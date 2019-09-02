@@ -11,8 +11,13 @@ namespace JsonSettingsManager.DocumentationLib
         public string Description { get; set; }
 
         public string Type { get; set; }
+
         public string Value { get; set; }
 
-        public IList<MemberInfo> Items { get; set; }
+        public IList<MemberInfo> Children { get; set; }
+
+        public IList<MemberInfo> Implementations { get; set; }
+
+        public MemberType MemberType { get; set; }
     }
 }

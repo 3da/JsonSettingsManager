@@ -4,7 +4,11 @@ using System.Text;
 
 namespace JsonSettingsManager.DocumentationLib
 {
-    public class ClassInfo : MemberInfo
+    public enum MemberType
     {
+        Primitive,
+        Class,
+        Enum,
+        Array
     }
 }

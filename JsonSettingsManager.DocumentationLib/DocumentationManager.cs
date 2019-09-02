@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
+using JsonSettingsManager.TypeResolving;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -13,7 +15,9 @@ namespace JsonSettingsManager.DocumentationLib
     {
         private readonly IContractResolver _contractResolver = new DefaultContractResolver();
 
-        public IList<MemberInfo> Generate(params object[] objects)
+        public IDescriptionProvider DescriptionProvider { get; set; }
+
+        public IList<MemberInfo> GenerateForObjects(params object[] objects)
         {
 
             var context = new Context();
@@ -25,23 +29,43 @@ namespace JsonSettingsManager.DocumentationLib
             return result;
         }
 
+        public IList<MemberInfo> GenerateForTypes(params Type[] types)
+        {
+
+            var context = new Context();
+            var result = new List<MemberInfo>();
+            foreach (var type in types)
+            {
+                result.Add(ProcessMember(type.Name, null, type, context));
+            }
+            return result;
+        }
+
+        private bool ShouldImpl(Type objectType)
+        {
+            return objectType.GetCustomAttribute(typeof(ResolveTypeAttribute), true) != null
+                   || objectType.GetInterfaces().Any(i => i.GetCustomAttribute(typeof(ResolveTypeAttribute)) != null);
+        }
+
         private MemberInfo ProcessMember(string name, object obj, Type type, Context context)
         {
             var contract = _contractResolver.ResolveContract(type ?? obj?.GetType());
 
             type = type ?? obj?.GetType();
 
-            if (type.IsPrimitive || type == typeof(string))
+            if (contract is JsonPrimitiveContract jsonPrimitiveContract)
             {
+                if (jsonPrimitiveContract.UnderlyingType.IsEnum)
+                    return ProcessEnum(name, jsonPrimitiveContract.UnderlyingType, context);
+
                 return new MemberInfo()
                 {
-                    Type = GetTypeFriendlyName(type),
+                    MemberType = MemberType.Primitive,
+                    Type = GetTypeFriendlyName(jsonPrimitiveContract.UnderlyingType),
                     Name = name
                 };
             }
 
-            if (type.IsEnum)
-                return ProcessEnum(name, type, context);
 
             if (contract is JsonArrayContract jsonArrayContract)
             {
@@ -50,9 +74,10 @@ namespace JsonSettingsManager.DocumentationLib
 
                 return new MemberInfo()
                 {
+                    MemberType = MemberType.Array,
                     Type = GetTypeFriendlyName(type),
                     Name = name,
-                    Items = new List<MemberInfo>()
+                    Children = new List<MemberInfo>()
                     {
                         ProcessMember("Item", null, elType, context)
                     }
@@ -63,11 +88,8 @@ namespace JsonSettingsManager.DocumentationLib
             if (contract is JsonObjectContract jsonObjectContract)
                 return ProcessClass(name, jsonObjectContract, obj, context);
 
-            return new MemberInfo()
-            {
-                Type = GetTypeFriendlyName(type),
-                Name = name,
-            };
+
+            throw new NotImplementedException();
         }
 
         private string GetTypeFriendlyName(Type type)
@@ -114,29 +136,75 @@ namespace JsonSettingsManager.DocumentationLib
             return type.Name;
         }
 
-        private EnumInfo ProcessEnum(string name, Type type, Context context)
+        private MemberInfo ProcessEnum(string name, Type type, Context context)
         {
-            return new EnumInfo()
+            return new MemberInfo()
             {
+                MemberType = MemberType.Enum,
                 Name = name,
                 Type = type.Name,
-                Items = Enum.GetValues(type).Cast<object>().Select(q => new MemberInfo()
+                Implementations = Enum.GetValues(type).Cast<object>().Select(q => new MemberInfo()
                 {
                     Name = Enum.GetName(type, q),
                     Type = GetTypeFriendlyName(type.GetEnumUnderlyingType()),
-                    Value = Convert.ChangeType(q, type.GetEnumUnderlyingType()).ToString()
-                }).ToArray()
+                    Value = Convert.ChangeType(q, type.GetEnumUnderlyingType()).ToString(),
+                    MemberType = MemberType.Primitive,
+                    Description = DescriptionProvider?.GetForEnumValue(type, q)
+                }).ToArray(),
+                Description = DescriptionProvider?.GetForType(type)
             };
         }
 
-        private ClassInfo ProcessClass(string name, JsonObjectContract contract, object obj, Context context)
+
+        private MemberInfo ProcessClass(string name, JsonObjectContract contract, object obj, Context context)
         {
 
-            return new ClassInfo()
+            var objectType = contract.UnderlyingType;
+
+            IList<MemberInfo> implementations = null;
+
+            if (ShouldImpl(objectType))
             {
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                var allTypes = assemblies.SelectMany(q =>
+                 {
+                     try
+                     {
+                         return q.GetTypes();
+                     }
+                     catch
+                     {
+                         return Enumerable.Empty<Type>();
+                     }
+                 }).Where(q => !q.IsInterface && !q.IsAbstract).ToArray();
+
+
+                var types = (objectType.IsInterface
+                    ? allTypes.Where(p => objectType.IsAssignableFrom(p))
+                    : allTypes.Where(t => t.IsSubclassOf(objectType))).ToArray();
+
+                implementations = types.Any()
+                    ? types.Select(q => ProcessMember(q.Name, null, q, context)).ToArray()
+                    : null;
+            }
+
+            return new MemberInfo()
+            {
+                MemberType = MemberType.Class,
                 Name = name,
                 Type = contract.UnderlyingType.Name,
-                Items = contract.Properties.Select(q => ProcessMember(q.PropertyName, obj == null ? null : q.ValueProvider.GetValue(obj), q.PropertyType, context)).Where(q => q != null).ToArray()
+                Children = contract.Properties.Select(q =>
+                {
+                    var childInfo = ProcessMember(q.PropertyName, obj == null ? null : q.ValueProvider.GetValue(obj),
+                        q.PropertyType, context);
+
+                    childInfo.Description = DescriptionProvider?.GetForMember(contract.UnderlyingType, q.PropertyName);
+
+                    return childInfo;
+                }).Where(q => q != null).ToArray(),
+                Implementations = implementations,
+                Description = DescriptionProvider?.GetForType(contract.UnderlyingType)
             };
         }
 

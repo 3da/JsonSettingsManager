@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JsonSettingsManager.DocumentationLib\JsonSettingsManager.DocumentationLib.csproj" />
+    <ProjectReference Include="..\JsonSettingsManager\JsonSettingsManager.csproj" />
   </ItemGroup>
 
 </Project>
