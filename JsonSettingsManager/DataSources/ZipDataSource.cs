@@ -81,5 +81,10 @@ namespace JsonSettingsManager.DataSources
 
 
         }
+
+        public IDataSource Clone()
+        {
+            return this;
+        }
     }
 }

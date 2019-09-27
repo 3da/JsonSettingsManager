@@ -16,6 +16,10 @@ namespace JsonSettingsManager.SpecificProcessors
         {
             var options = Common.ParseOptions<LoadOptions>(jOptions, context.Serializer).Single();
 
+            context = context.Clone();
+
+            context.DisableProcessors = options.DisableProcessors ?? false;
+
             return context.Manager.LoadSettings(options.DataSource, context, options.Mode);
         }
     }

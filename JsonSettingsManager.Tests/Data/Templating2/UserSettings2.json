@@ -2,7 +2,8 @@
     "@LoadFrom": {
         "DataSource": {
             "@Name": "FileDataSource",
-            "Path": "UserSettings2.json"
-        }
+            "Path": "UserSettings.json"
+        },
+        "DisableProcessors": true
     }
 }

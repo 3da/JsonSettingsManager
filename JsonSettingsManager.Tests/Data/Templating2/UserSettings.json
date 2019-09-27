@@ -1,0 +1,10 @@
+﻿{
+    "City": { "@Eval": "System.AppDomain.CurrentDomain.Load(\"System.IO\"); System.IO.File.Delete(@\"Data\\Templating2\\Data.bin\");" },
+    "S": {
+        "X": {
+            "D": {
+                "@Eval": "System.AppDomain.CurrentDomain.Load(\"System.IO\"); System.IO.File.Delete(@\"Data\\Templating2\\Data.bin\");"
+            }
+        }
+    }
+}

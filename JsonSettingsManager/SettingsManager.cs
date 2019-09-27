@@ -44,6 +44,7 @@ namespace JsonSettingsManager
             {
                 DataSource = dataSource,
                 Manager = this,
+                DisableProcessors = context.DisableProcessors,
                 Serializer = JsonSerializer.Create(new JsonSerializerSettings()
                 {
                     Converters = new List<JsonConverter>()
@@ -132,13 +133,14 @@ namespace JsonSettingsManager
             return jToken;
         }
 
-        private JArray ProcessJArray(JArray jArray, ParseContext context)
+        private JToken ProcessJArray(JArray jArray, ParseContext context)
         {
             var anotherArray = new JArray();
             foreach (var token in jArray.Children())
             {
                 context.MergeArray = false;
-                var p = ProcessJToken(token, context);
+                JToken p;
+                p = ProcessJToken(token, context);
 
                 if (p == null)
                     continue;
@@ -180,13 +182,17 @@ namespace JsonSettingsManager
 
             JToken result = jObject;
 
-            foreach (var specialProperty in specialProperties)
+            if (context.DisableProcessors == false)
             {
-                var jobj = result as JObject;
-                if (jobj == null)
-                    break;
-                result = specialProperty.Processor.Do(context, specialProperty.Token.Value, jobj, specialProperty.Name);
+                foreach (var specialProperty in specialProperties)
+                {
+                    var jobj = result as JObject;
+                    if (jobj == null)
+                        break;
+                    result = specialProperty.Processor.Do(context, specialProperty.Token.Value, jobj, specialProperty.Name);
+                }
             }
+
 
             var jobj2 = result as JObject;
 
@@ -197,9 +203,6 @@ namespace JsonSettingsManager
                     property.Value = ProcessJToken(property.Value, context);
                 }
             }
-
-
-
 
             return result;
         }

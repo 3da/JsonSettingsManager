@@ -17,29 +17,35 @@ namespace JsonSettingsManager.DataSources
 
         public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context)
         {
+            var newDataSource = new FileDataSource()
+            {
+                Encoding = Encoding,
+                Path = Path,
+                WorkDir = WorkDir
+            };
             if (lastDataSource is FileDataSource f)
             {
-                WorkDir = WorkDir ?? f.WorkDir;
-                Encoding = Encoding ?? f.Encoding;
+                newDataSource.WorkDir = WorkDir ?? f.WorkDir;
+                newDataSource.Encoding = Encoding ?? f.Encoding;
             }
 
-            if (Encoding == null)
-                Encoding = Encoding.UTF8;
+            if (newDataSource.Encoding == null)
+                newDataSource.Encoding = Encoding.UTF8;
 
 
             var searchPaths = new List<string>
             {
-                Path
+                newDataSource.Path
             };
 
             if (mode == LoadMode.Json)
-                searchPaths.Add(Path + ".json");
+                searchPaths.Add(newDataSource.Path + ".json");
 
-            if (WorkDir != null)
+            if (newDataSource.WorkDir != null)
             {
-                searchPaths.Insert(0, System.IO.Path.Combine(WorkDir, Path));
+                searchPaths.Insert(0, System.IO.Path.Combine(newDataSource.WorkDir, Path));
                 if (mode == LoadMode.Json)
-                    searchPaths.Insert(1, System.IO.Path.Combine(WorkDir, Path + ".json"));
+                    searchPaths.Insert(1, System.IO.Path.Combine(newDataSource.WorkDir, Path + ".json"));
             }
 
             FileInfo bestSearchPath = null;
@@ -56,19 +62,19 @@ namespace JsonSettingsManager.DataSources
             if (bestSearchPath == null)
                 throw new Exception();
 
-            WorkDir = bestSearchPath.DirectoryName;
+            newDataSource.WorkDir = bestSearchPath.DirectoryName;
 
             switch (mode)
             {
                 case LoadMode.Json:
-                    return (JToken.Parse(File.ReadAllText(bestSearchPath.FullName, Encoding)), this);
+                    return (JToken.Parse(File.ReadAllText(bestSearchPath.FullName, newDataSource.Encoding)), newDataSource);
                 case LoadMode.Text:
-                    return (new JValue(File.ReadAllText(bestSearchPath.FullName, Encoding)), this);
+                    return (new JValue(File.ReadAllText(bestSearchPath.FullName, newDataSource.Encoding)), newDataSource);
                 case LoadMode.Bin:
-                    return (JToken.FromObject(File.ReadAllBytes(bestSearchPath.FullName)), this);
+                    return (JToken.FromObject(File.ReadAllBytes(bestSearchPath.FullName)), newDataSource);
                 case LoadMode.Lines:
-                    var lines = File.ReadAllLines(bestSearchPath.FullName, Encoding);
-                    return (new JArray(lines), this);
+                    var lines = File.ReadAllLines(bestSearchPath.FullName, newDataSource.Encoding);
+                    return (new JArray(lines), newDataSource);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

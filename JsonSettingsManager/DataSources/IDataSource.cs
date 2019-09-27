@@ -4,9 +4,9 @@ using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.DataSources
 {
-	[ResolveType]
-	public interface IDataSource
-	{
-		 (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context);
-	}
+    [ResolveType]
+    public interface IDataSource
+    {
+        (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context);
+    }
 }

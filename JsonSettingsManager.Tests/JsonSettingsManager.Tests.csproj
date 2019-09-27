@@ -123,6 +123,12 @@
     <None Update="Data\Templating2\Data.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Templating2\UserSettings2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Templating2\UserSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Templating2\Settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
