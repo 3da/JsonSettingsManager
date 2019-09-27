@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>JsonSettingsManager.MongoDb</PackageId>
+    <Authors>3DA</Authors>
+    <PackageLicenseUrl>https://github.com/3da/JsonSettingsManager/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>

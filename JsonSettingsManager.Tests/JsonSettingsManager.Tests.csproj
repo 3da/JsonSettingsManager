@@ -120,6 +120,12 @@
     <None Update="Data\Serialization\ExpectedSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Templating2\Data.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Templating2\Settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Templating\ExpectedSettings3.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -5,6 +5,8 @@ using System.Text;
 using JsonSettingsManager.SpecificProcessors;
 using JsonSettingsManager.SpecificProcessors.Options;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.Templating
@@ -26,7 +28,7 @@ namespace JsonSettingsManager.Templating
 
             var result = CSharpScript.EvaluateAsync(options.Expression, globals: _globals).Result;
 
-            return JToken.FromObject(result);
+            return result != null ? JToken.FromObject(result) : null;
         }
     }
 }
