@@ -70,24 +70,37 @@ namespace JsonSettingsManager.TypeResolving
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var types = objectType.IsInterface
+            var types = (objectType.IsInterface
                 ? GetTypes()
                     .Where(p => objectType.IsAssignableFrom(p))
                 : GetTypes()
-                    .Where(t => t.IsSubclassOf(objectType) || objectType == t);
+                    .Where(t => t.IsSubclassOf(objectType) || objectType == t)).ToArray();
+
+            Type type;
 
             JObject jObject = JObject.Load(reader);
 
-            var classNameProp = jObject.Property("@Name");
+            if (types.Length == 1)
+            {
+                type = types[0];
+            }
+            else if (types.Length == 0)
+            {
+                throw new Exception($"No classes implement {objectType.Name}");
+            }
+            else
+            {
+                var classNameProp = jObject.Property("@Name");
 
-            classNameProp.Remove();
+                classNameProp.Remove();
 
-            var className = classNameProp.Value.Value<string>();
+                var className = classNameProp.Value.Value<string>();
 
-            var type = types.FirstOrDefault(q => q.Name.Equals(className));
+                type = types.FirstOrDefault(q => q.Name.Equals(className));
 
-            if (type == null)
-                throw new Exception($"Cannot find implementation '{className}' of '{objectType.Name}'");
+                if (type == null)
+                    throw new Exception($"Cannot find implementation '{className}' of '{objectType.Name}'");
+            }
 
             var result = Activator.CreateInstance(type);
 

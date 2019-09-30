@@ -142,7 +142,7 @@ namespace JsonSettingsManager.DocumentationLib
             {
                 MemberType = MemberType.Enum,
                 Name = name,
-                Type = type.Name,
+                Type = GetTypeFriendlyName(type),
                 Implementations = Enum.GetValues(type).Cast<object>().Select(q => new MemberInfo()
                 {
                     Name = Enum.GetName(type, q),
@@ -193,7 +193,7 @@ namespace JsonSettingsManager.DocumentationLib
             {
                 MemberType = MemberType.Class,
                 Name = name,
-                Type = contract.UnderlyingType.Name,
+                Type = GetTypeFriendlyName(contract.UnderlyingType),
                 Children = contract.Properties.Select(q =>
                 {
                     var childInfo = ProcessMember(q.PropertyName, q.PropertyType, context);
