@@ -12,7 +12,7 @@ namespace JsonSettingsManager.DocumentationLib.Tests
         {
             var manager = new DocumentationManager();
 
-            var documentation = manager.GenerateForObjects(obj);
+            var documentation = manager.GenerateForTypes(obj.GetType());
 
 
             Assert.AreEqual(JsonConvert.SerializeObject(expected, Formatting.Indented), JsonConvert.SerializeObject(documentation[0], Formatting.Indented));
