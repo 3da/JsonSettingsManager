@@ -125,12 +125,23 @@ namespace JsonSettingsManager
 
         private JToken ProcessJToken(JToken jToken, ParseContext context)
         {
-            if (jToken is JObject jObject)
-                return ProcessJObject(jObject, context);
-            if (jToken is JArray jArray)
-                return ProcessJArray(jArray, context);
+            try
+            {
+                if (jToken is JObject jObject)
+                    return ProcessJObject(jObject, context);
+                if (jToken is JArray jArray)
+                    return ProcessJArray(jArray, context);
 
-            return jToken;
+                return jToken;
+            }
+            catch (Exception e)
+            {
+                throw new SettingsException($"Error procesing JToken: {jToken.Path}", e)
+                {
+                    JToken = jToken
+                };
+            }
+
         }
 
         private JToken ProcessJArray(JArray jArray, ParseContext context)
@@ -189,7 +200,20 @@ namespace JsonSettingsManager
                     var jobj = result as JObject;
                     if (jobj == null)
                         break;
-                    result = specialProperty.Processor.Do(context, specialProperty.Token.Value, jobj, specialProperty.Name);
+
+                    try
+                    {
+                        result = specialProperty.Processor.Do(context, specialProperty.Token.Value, jobj, specialProperty.Name);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new SettingsException($"Error processing {specialProperty.Name} ({jobj.Path})", e)
+                        {
+                            JToken = specialProperty.Token.Value
+                        };
+                    }
+
+
                 }
             }
 

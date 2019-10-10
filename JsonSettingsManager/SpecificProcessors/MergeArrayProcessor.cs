@@ -30,7 +30,7 @@ namespace JsonSettingsManager.SpecificProcessors
             var otherArray = otherToken as JArray;
 
             if (otherArray == null)
-                throw new Exception($"Merge path {options.DataSource} must be JArray");
+                throw new SettingsException($"Merge path {options.DataSource} must be JArray");
 
             
 

@@ -41,7 +41,7 @@ namespace JsonSettingsManager.SpecificProcessors
                 var otherObj = otherToken as JObject;
 
                 if (otherObj == null)
-                    throw new Exception($"Merge path {mergePath} must be JObject");
+                    throw new SettingsException($"Merge path {mergePath} must be JObject");
 
 
                 if (option.Priority == MergePriority.This)

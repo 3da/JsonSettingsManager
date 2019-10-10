@@ -86,7 +86,7 @@ namespace JsonSettingsManager.TypeResolving
             }
             else if (types.Length == 0)
             {
-                throw new Exception($"No classes implement {objectType.Name}");
+                throw new SettingsException($"No classes implement {objectType.Name}");
             }
             else
             {
@@ -99,7 +99,7 @@ namespace JsonSettingsManager.TypeResolving
                 type = types.FirstOrDefault(q => q.Name.Equals(className));
 
                 if (type == null)
-                    throw new Exception($"Cannot find implementation '{className}' of '{objectType.Name}'");
+                    throw new SettingsException($"Cannot find implementation '{className}' of '{objectType.Name}'");
             }
 
             var result = Activator.CreateInstance(type);

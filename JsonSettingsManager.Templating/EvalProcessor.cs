@@ -26,9 +26,23 @@ namespace JsonSettingsManager.Templating
         {
             var options = Common.ParseOptions<EvalOptions>(jOptions, context.Serializer).Single();
 
-            var result = CSharpScript.EvaluateAsync(options.Expression, globals: _globals).Result;
+            try
+            {
 
-            return result != null ? JToken.FromObject(result) : null;
+                var result = CSharpScript.EvaluateAsync(options.Expression, globals: _globals).Result;
+
+
+                return result != null ? JToken.FromObject(result) : null;
+            }
+            catch (Exception e)
+            {
+                throw new SettingsException($"Error processing: {options.Expression}")
+                {
+                    JToken = jOptions
+                };
+            }
+
+
         }
     }
 }

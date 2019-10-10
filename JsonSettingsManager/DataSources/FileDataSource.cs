@@ -60,7 +60,7 @@ namespace JsonSettingsManager.DataSources
                 }
             }
             if (bestSearchPath == null)
-                throw new Exception();
+                throw new FileNotFoundException($"File not found: {Path}");
 
             newDataSource.WorkDir = bestSearchPath.DirectoryName;
 

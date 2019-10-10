@@ -20,7 +20,7 @@ namespace JsonSettingsManager.SpecificProcessors
             var arr = jOptions as JArray;
 
             if (arr == null)
-                throw new Exception();
+                throw new SettingsException();
 
             if (otherArr == null)
             {

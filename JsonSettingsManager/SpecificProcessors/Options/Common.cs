@@ -21,7 +21,7 @@ namespace JsonSettingsManager.SpecificProcessors.Options
 				var result = new T();
 				var strOption = result as IStringOption;
 				if (strOption == null)
-					throw new Exception($"Wrong value: {token}");
+					throw new SettingsException($"Wrong value: {token}. Expected string.");
 				strOption.FillFromString(token.ToObject<string>());
 				return result.WrapToArray();
 			}
@@ -48,7 +48,7 @@ namespace JsonSettingsManager.SpecificProcessors.Options
 				return arr;
 			}
 
-			throw new Exception();
+			throw new SettingsException($"Cannot parse options: {token}");
 		}
 	}
 }

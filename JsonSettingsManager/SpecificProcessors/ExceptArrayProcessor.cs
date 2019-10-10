@@ -15,7 +15,7 @@ namespace JsonSettingsManager.SpecificProcessors
             var arr = jOptions as JArray;
 
             if (arr == null)
-                throw new Exception();
+                throw new SettingsException("Cannot except array");
 
             var propName = keyWord.Substring(KeyWord.Length);
 
