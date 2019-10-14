@@ -201,9 +201,11 @@ namespace JsonSettingsManager
                     if (jobj == null)
                         break;
 
+                    var processedOptions = ProcessJToken(specialProperty.Token.Value, context);
+
                     try
                     {
-                        result = specialProperty.Processor.Do(context, specialProperty.Token.Value, jobj, specialProperty.Name);
+                        result = specialProperty.Processor.Do(context, processedOptions, jobj, specialProperty.Name);
                     }
                     catch (Exception e)
                     {
