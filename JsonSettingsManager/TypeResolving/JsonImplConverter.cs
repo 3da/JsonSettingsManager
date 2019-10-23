@@ -78,7 +78,10 @@ namespace JsonSettingsManager.TypeResolving
 
             Type type;
 
-            JObject jObject = JObject.Load(reader);
+            var token = JToken.Load(reader);
+
+            if (!(token is JObject jObject))
+                return null;
 
             if (types.Length == 1)
             {
@@ -91,6 +94,12 @@ namespace JsonSettingsManager.TypeResolving
             else
             {
                 var classNameProp = jObject.Property("@Name");
+
+                if (classNameProp == null)
+                    throw new SettingsException($"Cannot find property @Name")
+                    {
+                        JToken = jObject
+                    };
 
                 classNameProp.Remove();
 
