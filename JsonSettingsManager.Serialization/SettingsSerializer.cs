@@ -76,7 +76,7 @@ namespace JsonSettingsManager.Serialization
                 NullValueHandling = NullValueHandling.Ignore,
                 Converters = new List<JsonConverter>()
                 {
-                    new JsonImplConverter()
+                    new JsonImplConverter(null)
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
                 Formatting = Formatting.Indented

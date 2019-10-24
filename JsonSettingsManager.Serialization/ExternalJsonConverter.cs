@@ -55,7 +55,7 @@ namespace JsonSettingsManager.Serialization
                 Converters = new List<JsonConverter>()
                 {
                     new StringEnumConverter(),
-                    new JsonImplConverter()
+                    new JsonImplConverter(null)
                 }
             });
         }

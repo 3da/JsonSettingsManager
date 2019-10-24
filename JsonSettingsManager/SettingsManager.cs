@@ -15,6 +15,7 @@ namespace JsonSettingsManager
     {
         private readonly List<ISpecificProcessor> _specialProcessors;
 
+        public IServiceProvider ServiceProvider { get; set; }
 
         public SettingsManager(params ISpecificProcessor[] processors)
         {
@@ -32,6 +33,22 @@ namespace JsonSettingsManager
             _specialProcessors.AddRange(processors);
         }
 
+        private List<JsonConverter> Converters
+        {
+            get
+            {
+                var result = new List<JsonConverter>(2)
+                {
+                    new JsonImplConverter(ServiceProvider)
+                };
+
+                if (ServiceProvider != null)
+                    result.Add(new DependencyInjectionActivator(ServiceProvider));
+
+                return result;
+            }
+        }
+
         internal JToken LoadSettings(IDataSource dataSource, ParseContext context, LoadMode mode)
         {
             if (context == null)
@@ -47,10 +64,7 @@ namespace JsonSettingsManager
                 DisableProcessors = context.DisableProcessors,
                 Serializer = JsonSerializer.Create(new JsonSerializerSettings()
                 {
-                    Converters = new List<JsonConverter>()
-                    {
-                        new JsonImplConverter()
-                    }
+                    Converters = Converters
                 })
             });
         }
@@ -100,10 +114,7 @@ namespace JsonSettingsManager
         {
             return token.ToObject<T>(JsonSerializer.Create(new JsonSerializerSettings()
             {
-                Converters = new List<JsonConverter>()
-                {
-                    new JsonImplConverter()
-                }
+                Converters = Converters
             }));
         }
 

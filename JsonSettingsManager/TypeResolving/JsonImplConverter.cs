@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -11,6 +12,13 @@ namespace JsonSettingsManager.TypeResolving
 {
     public class JsonImplConverter : JsonConverter
     {
+        private readonly IServiceProvider _serviceProvider;
+
+        public JsonImplConverter(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
         public override bool CanRead => true;
         public override bool CanWrite => true;
 
@@ -111,7 +119,12 @@ namespace JsonSettingsManager.TypeResolving
                     throw new SettingsException($"Cannot find implementation '{className}' of '{objectType.Name}'");
             }
 
-            var result = Activator.CreateInstance(type);
+            object result = null;
+            if (_serviceProvider != null)
+                result = ActivatorUtilities.CreateInstance(_serviceProvider, type);
+
+            if (result == null)
+                result = Activator.CreateInstance(type);
 
             serializer.Populate(jObject.CreateReader(), result);
 
