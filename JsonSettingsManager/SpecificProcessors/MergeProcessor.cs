@@ -36,6 +36,8 @@ namespace JsonSettingsManager.SpecificProcessors
 
                 context.DisableProcessors = option.DisableProcessors ?? false;
 
+                context.Parameters = option.Parameters;
+
                 var otherToken = context.Manager.LoadSettings(mergePath, context, LoadMode.Json);
 
                 var otherObj = otherToken as JObject;

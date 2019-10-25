@@ -65,7 +65,8 @@ namespace JsonSettingsManager
                 Serializer = JsonSerializer.Create(new JsonSerializerSettings()
                 {
                     Converters = Converters
-                })
+                }),
+                Parameters = context.Parameters
             });
         }
 

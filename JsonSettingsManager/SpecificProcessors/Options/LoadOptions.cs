@@ -1,5 +1,7 @@
-﻿using JsonSettingsManager.DataSources;
+﻿using System.Collections.Generic;
+using JsonSettingsManager.DataSources;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.SpecificProcessors.Options
 {
@@ -7,10 +9,23 @@ namespace JsonSettingsManager.SpecificProcessors.Options
     {
         public IDataSource DataSource { get; set; }
 
+        public string Path
+        {
+            set
+            {
+                DataSource = new FileDataSource()
+                {
+                    Path = value
+                };
+            }
+        }
+
         public LoadMode Mode { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool? DisableProcessors { get; set; }
+
+        public IDictionary<string, object> Parameters { get; set; }
 
         public void FillFromString(string str)
         {

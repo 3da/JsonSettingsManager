@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using JsonSettingsManager.SpecificProcessors;
 using JsonSettingsManager.SpecificProcessors.Options;
 using Microsoft.CodeAnalysis.CSharp;
@@ -23,9 +24,24 @@ namespace JsonSettingsManager.Templating
         {
             var options = Common.ParseOptions<ConditionOptions>(jOptions, context.Serializer).Single();
 
-            var result = CSharpScript.EvaluateAsync<bool>(options.If, globals: _globals).Result;
+            try
+            {
 
-            return result ? options.Then : options.Else;
+                var globals = GlobalsProcessor.Process(_globals, context);
+
+                var result = CSharpScript.EvaluateAsync<bool>(options.If, globals: globals,
+                    options: ScriptOptions.Default.WithReferences("Microsoft.CSharp")).Result;
+
+                return result ? options.Then : options.Else;
+            }
+            catch (Exception e)
+            {
+                throw new SettingsException($"Error processing: {options.If}")
+                {
+                    JToken = jOptions
+                };
+            }
+
         }
     }
 }

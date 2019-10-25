@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using JsonSettingsManager.SpecificProcessors.Options;
@@ -19,6 +20,8 @@ namespace JsonSettingsManager.SpecificProcessors
             context = context.Clone();
 
             context.DisableProcessors = options.DisableProcessors ?? false;
+
+            context.Parameters = options.Parameters;
 
             return context.Manager.LoadSettings(options.DataSource, context, options.Mode);
         }

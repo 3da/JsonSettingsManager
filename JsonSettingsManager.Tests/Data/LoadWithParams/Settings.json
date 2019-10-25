@@ -1,0 +1,22 @@
+﻿{
+    "Items": [
+        {
+            "@LoadFrom": {
+                "Path": "External.json",
+                "Parameters": {
+                    "Var1": 12,
+                    "Var2": false
+                }
+            }
+        },
+        {
+            "@LoadFrom": {
+                "Path": "External.json",
+                "Parameters": {
+                    "Var1": 9,
+                    "Var2": true
+                }
+            }
+        }
+    ]
+}

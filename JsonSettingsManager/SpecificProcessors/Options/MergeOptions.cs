@@ -1,4 +1,5 @@
-﻿using JsonSettingsManager.DataSources;
+﻿using System.Collections.Generic;
+using JsonSettingsManager.DataSources;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,6 +16,8 @@ namespace JsonSettingsManager.SpecificProcessors.Options
 
         [JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? DisableProcessors { get; set; }
+
+        public IDictionary<string, object> Parameters { get; set; }
 
         public void FillFromString(string str)
         {

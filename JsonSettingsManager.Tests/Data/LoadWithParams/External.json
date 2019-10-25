@@ -1,0 +1,9 @@
+﻿{
+    "Hello": { "@Eval": "Fields.Var1 * 3" },
+    "World": {
+        "@Condition": {
+            "If": "Fields.Var2",
+            "Then": 125
+        }
+    }
+}

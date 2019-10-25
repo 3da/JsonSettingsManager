@@ -13,6 +13,7 @@ namespace JsonSettingsManager
         public SettingsManager Manager { get; set; }
         public JsonSerializer Serializer { get; set; }
         public bool DisableProcessors { get; set; }
+        public IDictionary<string, object> Parameters { get; set; }
 
         public ParseContext Clone()
         {
@@ -22,7 +23,8 @@ namespace JsonSettingsManager
                 Manager = Manager,
                 MergeArray = MergeArray,
                 Serializer = Serializer,
-                DisableProcessors = DisableProcessors
+                DisableProcessors = DisableProcessors,
+                Parameters = Parameters != null ? new Dictionary<string, object>(Parameters) : null
             };
         }
 

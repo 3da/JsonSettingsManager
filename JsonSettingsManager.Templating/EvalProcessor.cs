@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using JsonSettingsManager.SpecificProcessors;
 using JsonSettingsManager.SpecificProcessors.Options;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
@@ -29,8 +33,10 @@ namespace JsonSettingsManager.Templating
             try
             {
 
-                var result = CSharpScript.EvaluateAsync(options.Expression, globals: _globals).Result;
+                var globals = GlobalsProcessor.Process(_globals, context);
 
+                var result = CSharpScript.EvaluateAsync(options.Expression, globals: globals,
+                    options: ScriptOptions.Default.WithReferences("Microsoft.CSharp")).Result;
 
                 return result != null ? JToken.FromObject(result) : null;
             }

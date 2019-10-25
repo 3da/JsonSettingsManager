@@ -73,6 +73,15 @@
     <None Update="Data\LoadModes\Settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\LoadWithParams\External.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\LoadWithParams\Expected.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\LoadWithParams\Settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\MongoDbTest\Settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
