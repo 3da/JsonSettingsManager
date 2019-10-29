@@ -39,6 +39,44 @@ namespace JsonSettingsManager.Tests
             Assert.AreEqual(settings2.ToString(), settings.ToString());
 
         }
+
+        [TestMethod]
+        public void TestLoadWithParameters2()
+        {
+            var globals = new Dictionary<string, object>()
+            {
+                ["Var1"] = 10,
+                ["Var2"] = true
+            };
+
+            var manager = new SettingsManager(new EvalProcessor(globals), new ConditionProcessor(globals));
+
+            var settings = manager.LoadSettings("Data\\LoadWithParams\\External.json");
+
+            var settings2 = manager.LoadSettings("Data\\LoadWithParams\\Expected2.json");
+
+            Assert.AreEqual(settings2.ToString(), settings.ToString());
+
+        }
+
+        [TestMethod]
+        public void TestLoadWithParameters3()
+        {
+            var globals = new Dictionary<string, object>()
+            {
+                ["Var1"] = 0.33333333333333333f,
+                ["Var2"] = true
+            };
+
+            var manager = new SettingsManager(new EvalProcessor(globals), new ConditionProcessor(globals));
+
+            var settings = manager.LoadSettings("Data\\LoadWithParams\\Settings3.json");
+
+            var settings2 = manager.LoadSettings("Data\\LoadWithParams\\Expected3.json");
+
+            Assert.AreEqual(settings2.ToString(), settings.ToString());
+
+        }
     }
 
 }

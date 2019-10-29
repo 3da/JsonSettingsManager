@@ -51,6 +51,20 @@ namespace JsonSettingsManager.Serialization
             context.SaveExternal -= SaveExternal;
         }
 
+        public string SaveJsonString(object obj)
+        {
+            return JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters = new List<JsonConverter>()
+                {
+                    new JsonImplConverter(null)
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                Formatting = Formatting.Indented
+            });
+        }
+
         static void SaveExternal(SerializationContext context, string path, LoadMode mode, object value)
         {
             var newPath = path;

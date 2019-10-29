@@ -1,0 +1,9 @@
+﻿{
+    "Items": [
+        {
+            "@LoadFrom": {
+                "Path": "External.json"
+            }
+        }
+    ]
+}
