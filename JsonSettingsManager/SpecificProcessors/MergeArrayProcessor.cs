@@ -23,6 +23,18 @@ namespace JsonSettingsManager.SpecificProcessors
 
             context.DisableProcessors = options.DisableProcessors ?? false;
 
+            if (context.Parameters == null)
+            {
+                context.Parameters = options.Parameters;
+            }
+            else if (options.Parameters != null)
+            {
+                foreach (KeyValuePair<string, object> optionParameter in options.Parameters)
+                {
+                    context.Parameters[optionParameter.Key] = optionParameter.Value;
+                }
+            }
+
             JToken otherToken;
 
             otherToken = context.Manager.LoadSettings(options.DataSource, context, LoadMode.Json);
@@ -32,7 +44,7 @@ namespace JsonSettingsManager.SpecificProcessors
             if (otherArray == null)
                 throw new SettingsException($"Merge path {options.DataSource} must be JArray");
 
-            
+
 
             return otherArray;
         }

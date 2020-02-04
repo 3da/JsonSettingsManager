@@ -21,7 +21,17 @@ namespace JsonSettingsManager.SpecificProcessors
 
             context.DisableProcessors = options.DisableProcessors ?? false;
 
-            context.Parameters = options.Parameters;
+            if (context.Parameters == null)
+            {
+                context.Parameters = options.Parameters;
+            }
+            else if (options.Parameters != null)
+            {
+                foreach (KeyValuePair<string, object> optionParameter in options.Parameters)
+                {
+                    context.Parameters[optionParameter.Key] = optionParameter.Value;
+                }
+            }
 
             return context.Manager.LoadSettings(options.DataSource, context, options.Mode);
         }

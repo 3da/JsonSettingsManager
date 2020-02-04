@@ -42,7 +42,7 @@ namespace JsonSettingsManager.Templating
             }
             catch (Exception e)
             {
-                throw new SettingsException($"Error processing: {options.Expression}")
+                throw new SettingsException($"Error processing: {options.Expression}", e)
                 {
                     JToken = jOptions
                 };

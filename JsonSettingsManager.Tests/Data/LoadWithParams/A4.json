@@ -1,0 +1,13 @@
+﻿{
+  "Section": {
+    "@LoadFrom": {
+      "DataSource": {
+        "@Name": "FileDataSource",
+        "Path": "B4.json"
+      },
+      "Parameters": {
+        "@LoadFrom": "D4"
+      }
+    }
+  }
+}
