@@ -36,7 +36,18 @@ namespace JsonSettingsManager.SpecificProcessors
 
                 context.DisableProcessors = option.DisableProcessors ?? false;
 
-                context.Parameters = option.Parameters;
+                if (context.Parameters == null)
+                {
+                    context.Parameters = option.Parameters;
+                }
+                else if (option.Parameters != null)
+                {
+                    foreach (KeyValuePair<string, object> optionParameter in option.Parameters)
+                    {
+                        context.Parameters[optionParameter.Key] = optionParameter.Value;
+                    }
+                }
+
 
                 var otherToken = context.Manager.LoadSettings(mergePath, context, LoadMode.Json);
 
