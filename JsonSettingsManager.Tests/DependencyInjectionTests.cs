@@ -26,6 +26,8 @@ namespace JsonSettingsManager.Tests
 
             public string Method() => _class.Field + Number;
 
+            public string Text { get; set; }
+
             public int Number { get; set; }
         }
 
@@ -48,7 +50,7 @@ namespace JsonSettingsManager.Tests
                 ServiceProvider = provider
             };
 
-            var settings = manager.LoadSettings<Settings>(JToken.Parse("{ \"Field\": { \"Number\": 59 }}"));
+            var settings = manager.LoadSettings<Settings>(JToken.Parse("{ \"Field\": { \"Number\": 59, \"Text\": \"zxc\" }}"));
 
             Assert.AreEqual("Hello59", settings.Field.Method());
         }

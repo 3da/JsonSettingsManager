@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.TypeResolving
 {
@@ -27,7 +28,9 @@ namespace JsonSettingsManager.TypeResolving
                 return null;
             }
 
-            var result = ActivatorUtilities.CreateInstance(_serviceProvider, objectType) ?? Activator.CreateInstance(objectType);
+            object result;
+            result = ActivatorUtilities.CreateInstance(_serviceProvider, objectType) ?? Activator.CreateInstance(objectType);
+
 
             if (result == null)
             {
@@ -40,7 +43,7 @@ namespace JsonSettingsManager.TypeResolving
 
         public override bool CanConvert(Type objectType)
         {
-            if (objectType.IsPrimitive)
+            if (objectType.IsPrimitive || objectType == typeof(string))
                 return false;
             return true;
         }
