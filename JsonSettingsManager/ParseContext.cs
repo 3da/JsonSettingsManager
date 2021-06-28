@@ -14,6 +14,7 @@ namespace JsonSettingsManager
         public JsonSerializer Serializer { get; set; }
         public bool DisableProcessors { get; set; }
         public IDictionary<string, object> Parameters { get; set; }
+        public IFsProvider FsProvider { get; set; }
 
         public ParseContext Clone()
         {
@@ -24,7 +25,8 @@ namespace JsonSettingsManager
                 MergeArray = MergeArray,
                 Serializer = Serializer,
                 DisableProcessors = DisableProcessors,
-                Parameters = Parameters != null ? new Dictionary<string, object>(Parameters) : null
+                Parameters = Parameters != null ? new Dictionary<string, object>(Parameters) : null,
+                FsProvider = FsProvider
             };
         }
 

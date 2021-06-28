@@ -17,6 +17,8 @@ namespace JsonSettingsManager
 
         public IServiceProvider ServiceProvider { get; set; }
 
+        public IFsProvider FsProvider { get; set; } = new FsProvider();
+
         public SettingsManager(params ISpecificProcessor[] processors)
         {
             _specialProcessors = new List<ISpecificProcessor>
@@ -66,7 +68,8 @@ namespace JsonSettingsManager
                 {
                     Converters = Converters
                 }),
-                Parameters = context.Parameters
+                Parameters = context.Parameters,
+                FsProvider = context.FsProvider
             });
         }
 
@@ -75,11 +78,14 @@ namespace JsonSettingsManager
             var parseContext = new ParseContext()
             {
                 Manager = this,
-                DataSource = dataSource
+                DataSource = dataSource,
+                FsProvider = FsProvider
             };
 
             return LoadSettings(dataSource, parseContext, LoadMode.Json);
         }
+
+
 
         public JToken LoadSettings(string path, string workDir = null)
         {

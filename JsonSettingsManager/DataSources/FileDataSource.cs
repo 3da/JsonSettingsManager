@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
@@ -48,32 +49,35 @@ namespace JsonSettingsManager.DataSources
                     searchPaths.Insert(1, System.IO.Path.Combine(newDataSource.WorkDir, Path + ".json"));
             }
 
-            FileInfo bestSearchPath = null;
+            string bestSearchPath = null;
+
+            var fsProvider = context.FsProvider;
 
             foreach (var searchPath in searchPaths)
             {
-                var sp = new FileInfo(searchPath);
-                if (sp.Exists)
+                if (fsProvider.FileExists(searchPath))
                 {
-                    bestSearchPath = sp;
+                    bestSearchPath = searchPath;
                     break;
                 }
             }
             if (bestSearchPath == null)
                 throw new FileNotFoundException($"File not found: {Path}");
 
-            newDataSource.WorkDir = bestSearchPath.DirectoryName;
+            newDataSource.WorkDir = System.IO.Path.GetDirectoryName(bestSearchPath);
 
             switch (mode)
             {
                 case LoadMode.Json:
-                    return (JToken.Parse(File.ReadAllText(bestSearchPath.FullName, newDataSource.Encoding)), newDataSource);
+                    return (JToken.Parse(fsProvider.LoadTextFile(bestSearchPath, newDataSource.Encoding)), newDataSource);
                 case LoadMode.Text:
-                    return (new JValue(File.ReadAllText(bestSearchPath.FullName, newDataSource.Encoding)), newDataSource);
+                    return (new JValue(fsProvider.LoadTextFile(bestSearchPath, newDataSource.Encoding)), newDataSource);
                 case LoadMode.Bin:
-                    return (JToken.FromObject(File.ReadAllBytes(bestSearchPath.FullName)), newDataSource);
+                    return (JToken.FromObject(fsProvider.LoadBinFile(bestSearchPath)), newDataSource);
                 case LoadMode.Lines:
-                    var lines = File.ReadAllLines(bestSearchPath.FullName, newDataSource.Encoding);
+                    var lines = fsProvider.LoadTextFile(bestSearchPath, newDataSource.Encoding)
+                        .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(q => (object)q.Trim('\r')).ToArray();
                     return (new JArray(lines), newDataSource);
                 default:
                     throw new ArgumentOutOfRangeException();
