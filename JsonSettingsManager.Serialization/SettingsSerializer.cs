@@ -28,10 +28,14 @@ namespace JsonSettingsManager.Serialization
                 };
 
                 context.SaveExternal += SaveExternal;
-
-                SaveExternal(context, new FileInfo("Main.json").FullName, LoadMode.Json, obj);
-
-                context.SaveExternal -= SaveExternal;
+                try
+                {
+                    SaveExternal(context, new FileInfo("Main.json").FullName, LoadMode.Json, obj);
+                }
+                finally
+                {
+                    context.SaveExternal -= SaveExternal;
+                }
             }
 
         }
@@ -115,6 +119,15 @@ namespace JsonSettingsManager.Serialization
                 case LoadMode.Bin:
                     using (var stream = new MemoryStream((byte[])value))
                         context.Writer.Write(newPath, stream);
+                    break;
+                case LoadMode.LargeBin:
+                    var bytes = (byte[][])value;
+                    var streams = bytes.Select(b => (Stream)new MemoryStream(b)).ToArray();
+                    context.Writer.Write(newPath, streams);
+                    foreach (var stream in streams)
+                    {
+                        stream.Dispose();
+                    }
                     break;
                 case LoadMode.Lines:
                     using (var memoryStream = new MemoryStream())

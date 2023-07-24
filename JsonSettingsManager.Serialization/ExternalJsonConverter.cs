@@ -30,16 +30,17 @@ namespace JsonSettingsManager.Serialization
                 switch (mode)
                 {
                     case LoadMode.Json:
-                        _path = _path + ".json";
+                        _path += ".json";
                         break;
                     case LoadMode.Text:
-                        _path = _path + ".txt";
+                        _path += ".txt";
                         break;
                     case LoadMode.Bin:
-                        _path = _path + ".bin";
+                    case LoadMode.LargeBin:
+                        _path += ".bin";
                         break;
                     case LoadMode.Lines:
-                        _path = _path + ".txt";
+                        _path += ".txt";
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);

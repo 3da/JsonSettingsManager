@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace JsonSettingsManager
 {
@@ -22,5 +23,10 @@ namespace JsonSettingsManager
             return File.ReadAllBytes(path);
         }
 
+        public byte[][] LoadLargeBinFile(string path)
+        {
+            using var stream = File.OpenRead(path);
+            return StreamUtils.LoadLargeBytesFromStream(stream);
+        }
     }
 }

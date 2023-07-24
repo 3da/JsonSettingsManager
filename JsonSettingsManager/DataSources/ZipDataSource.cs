@@ -59,6 +59,8 @@ namespace JsonSettingsManager.DataSources
                             stream.CopyTo(memoryStream);
                             return (JToken.FromObject(memoryStream.ToArray()), this);
                         }
+                    case LoadMode.LargeBin:
+                        return (JToken.FromObject(StreamUtils.LoadLargeBytesFromStream(stream)), this);
                     case LoadMode.Lines:
                         var reader = new StreamReader(stream, Encoding);
                         var lines = new List<string>();

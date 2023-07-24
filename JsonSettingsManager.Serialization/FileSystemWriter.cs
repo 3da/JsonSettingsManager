@@ -10,7 +10,7 @@ namespace JsonSettingsManager.Serialization
 {
     public class FileSystemWriter : IWriter
     {
-        public void Write(string path, Stream stream)
+        public void Write(string path, params Stream[] streams)
         {
             var newPath = path;
 
@@ -25,7 +25,10 @@ namespace JsonSettingsManager.Serialization
 
             using (var outputStream = File.Create(path))
             {
-                stream.CopyTo(outputStream);
+                foreach (var stream in streams)
+                {
+                    stream.CopyTo(outputStream);
+                }
             }
         }
 

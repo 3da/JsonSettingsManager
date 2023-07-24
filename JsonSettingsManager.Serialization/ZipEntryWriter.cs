@@ -20,7 +20,7 @@ namespace JsonSettingsManager.Serialization
         }
 
 
-        public void Write(string path, Stream stream)
+        public void Write(string path, params Stream[] streams)
         {
             var uri = new Uri(path);
 
@@ -29,7 +29,12 @@ namespace JsonSettingsManager.Serialization
             var entry = _zipArchive.CreateEntry(relative.ToString().Replace('/', Path.DirectorySeparatorChar));
 
             using (var entryStream = entry.Open())
-                stream.CopyTo(entryStream);
+            {
+                foreach (var stream in streams)
+                {
+                    stream.CopyTo(entryStream);
+                }
+            }
         }
 
         public IDataSource CreateDataSource(string path)

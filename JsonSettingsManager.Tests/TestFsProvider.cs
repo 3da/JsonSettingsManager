@@ -25,5 +25,10 @@ namespace JsonSettingsManager.Tests
         {
             return _fsProvider.LoadBinFile(path);
         }
+
+        public byte[][] LoadLargeBinFile(string path)
+        {
+            return _fsProvider.LoadLargeBinFile(path);
+        }
     }
 }

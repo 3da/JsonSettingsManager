@@ -9,6 +9,7 @@ namespace JsonSettingsManager.DataSources
         Json,
         Text,
         Bin,
-        Lines
+        Lines,
+        LargeBin
     }
 }

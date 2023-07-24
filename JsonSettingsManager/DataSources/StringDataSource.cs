@@ -18,6 +18,7 @@ namespace JsonSettingsManager.DataSources
                 case LoadMode.Text:
                     return (new JValue(Text), this);
                 case LoadMode.Bin:
+                case LoadMode.LargeBin:
                     throw new InvalidOperationException();
                 case LoadMode.Lines:
                     var lines = Text.Split('\n').Select(q => q.Trim('\r')).ToArray();

@@ -74,6 +74,8 @@ namespace JsonSettingsManager.DataSources
                     return (new JValue(fsProvider.LoadTextFile(bestSearchPath, newDataSource.Encoding)), newDataSource);
                 case LoadMode.Bin:
                     return (JToken.FromObject(fsProvider.LoadBinFile(bestSearchPath)), newDataSource);
+                case LoadMode.LargeBin:
+                    return (JToken.FromObject(fsProvider.LoadLargeBinFile(bestSearchPath)), newDataSource);
                 case LoadMode.Lines:
                     var lines = fsProvider.LoadTextFile(bestSearchPath, newDataSource.Encoding)
                         .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
