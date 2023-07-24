@@ -92,7 +92,7 @@ namespace JsonSettingsManager
         {
             var fi = new FileInfo(path);
             if (fi.Extension == ".zip")
-                return await LoadSettingsZipAsync(path, workDir, token);
+                return await LoadSettingsZipAsync(path, token);
             else
                 return await LoadSettingsJsonAsync(path, workDir, token);
         }
@@ -101,7 +101,7 @@ namespace JsonSettingsManager
         {
             var fi = new FileInfo(path);
             if (fi.Extension == ".zip")
-                return await LoadSettingsZipAsync<T>(path, workDir, token);
+                return await LoadSettingsZipAsync<T>(path, token);
             else
                 return await LoadSettingsJsonAsync<T>(path, workDir, token);
         }
@@ -126,16 +126,16 @@ namespace JsonSettingsManager
             }));
         }
 
-        public async Task<JToken> LoadSettingsZipAsync(string path, string workDir = null, CancellationToken token = default)
+        public async Task<JToken> LoadSettingsZipAsync(string path, CancellationToken token = default)
         {
             await using var stream = File.OpenRead(path);
             using var archive = new ZipArchive(stream);
             return await LoadSettingsAsync(new ZipDataSource() { Path = "Main.json", ZipArchive = archive }, token);
         }
 
-        public async Task<T> LoadSettingsZipAsync<T>(string path, string workDir = null, CancellationToken token = default)
+        public async Task<T> LoadSettingsZipAsync<T>(string path, CancellationToken token = default)
         {
-            var jToken = await LoadSettingsZipAsync(path, workDir, token);
+            var jToken = await LoadSettingsZipAsync(path, token);
 
             return LoadSettings<T>(jToken);
         }
