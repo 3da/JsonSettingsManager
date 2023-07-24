@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
@@ -12,14 +13,14 @@ namespace JsonSettingsManager.Tests
     public class FsHandlerTests
     {
         [TestMethod]
-        public void Test()
+        public async Task Test()
         {
             var settingsManager = new SettingsManager();
 
             TestFsProvider fsProvider;
             settingsManager.FsProvider = fsProvider = new TestFsProvider();
 
-            var settings = settingsManager.LoadSettings("Data\\ComplexTest\\Settings.json");
+            var settings = await settingsManager.LoadSettingsAsync("Data\\ComplexTest\\Settings.json");
 
             var expected = new string[]
             {

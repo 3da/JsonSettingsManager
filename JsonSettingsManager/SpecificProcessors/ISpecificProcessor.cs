@@ -1,4 +1,6 @@
-﻿using JsonSettingsManager.SpecificProcessors.Options;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using JsonSettingsManager.SpecificProcessors.Options;
 using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.SpecificProcessors
@@ -9,6 +11,6 @@ namespace JsonSettingsManager.SpecificProcessors
 
         bool IsPrefix { get; }
 
-        JToken Do(ParseContext context, JToken jOptions, JObject obj, string keyWord);
+        Task<JToken> DoAsync(ParseContext context, JToken jOptions, JObject obj, string keyWord, CancellationToken token = default);
     }
 }

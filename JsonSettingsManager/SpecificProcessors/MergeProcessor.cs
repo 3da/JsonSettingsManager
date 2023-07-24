@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using JsonSettingsManager.DataSources;
 using JsonSettingsManager.SpecificProcessors.Options;
 using Newtonsoft.Json.Linq;
@@ -12,7 +14,8 @@ namespace JsonSettingsManager.SpecificProcessors
         public string KeyWord { get; } = "MergeWith";
         public bool IsPrefix => false;
 
-        public JToken Do(ParseContext context, JToken jOptions, JObject obj, string keyWord)
+        public async Task<JToken> DoAsync(ParseContext context, JToken jOptions, JObject obj, string keyWord,
+            CancellationToken token = default)
         {
             var options = Common.ParseOptions<MergeOptions>(jOptions, context.Serializer);
 
@@ -49,7 +52,7 @@ namespace JsonSettingsManager.SpecificProcessors
                 }
 
 
-                var otherToken = context.Manager.LoadSettings(mergePath, context, LoadMode.Json);
+                var otherToken = await context.Manager.LoadSettingsAsync(mergePath, context, LoadMode.Json, token);
 
                 var otherObj = otherToken as JObject;
 

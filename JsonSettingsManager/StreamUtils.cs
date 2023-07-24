@@ -3,33 +3,54 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace JsonSettingsManager
 {
     public static class StreamUtils
     {
-        public static byte[][] LoadLargeBytesFromStream(Stream stream)
+        public static async Task<byte[][]> LoadLargeBytesFromStreamAsync(Stream stream, CancellationToken token = default)
         {
             var result = new List<byte[]>();
 
             while (true)
             {
                 var buffer = new byte[0X7FFFFFC7];
+                int sizeLeft = 0X7FFFFFC7;
+                int offset = 0;
 
-                var count = stream.Read(buffer, 0, buffer.Length);
+                int count;
 
-                if (count > 0)
+                while (true)
                 {
-                    if (count != buffer.Length)
-                        Array.Resize(ref buffer, count);
+                    count = await stream.ReadAsync(buffer, offset, sizeLeft, token);
+                    sizeLeft -= count;
+                    offset += count;
+                    if (sizeLeft == 0 || count == 0)
+                    {
+                        if (sizeLeft > 0)
+                            Array.Resize(ref buffer, buffer.Length - sizeLeft);
 
-                    result.Add(buffer);
+                        result.Add(buffer);
+                        break;
+                    }
                 }
-                else
+                if (count == 0)
                     break;
+
+
             }
 
             return result.ToArray();
+        }
+
+        public static async Task WriteLargeBytesToStreamAsync(Stream stream, byte[][] bytes, CancellationToken token = default)
+        {
+            foreach (var b in bytes)
+            {
+                await stream.WriteAsync(b, token);
+            }
         }
     }
 }

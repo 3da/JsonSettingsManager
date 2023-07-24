@@ -75,7 +75,7 @@ namespace JsonSettingsManager.Serialization
             }
 
 
-            _context.OnSaveExternal(_context, path, _mode, value);
+            _context.SaveExternalAsync(_context, path, _mode, value).Wait();
 
 
             var opt = new LoadOptions()

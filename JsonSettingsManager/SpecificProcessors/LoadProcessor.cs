@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using JsonSettingsManager.SpecificProcessors.Options;
 using Newtonsoft.Json.Linq;
 
@@ -13,7 +15,8 @@ namespace JsonSettingsManager.SpecificProcessors
         public string KeyWord { get; } = "LoadFrom";
         public bool IsPrefix => false;
 
-        public JToken Do(ParseContext context, JToken jOptions, JObject obj, string keyWord)
+        public async Task<JToken> DoAsync(ParseContext context, JToken jOptions, JObject obj, string keyWord,
+            CancellationToken token = default)
         {
             var options = Common.ParseOptions<LoadOptions>(jOptions, context.Serializer).Single();
 
@@ -33,7 +36,7 @@ namespace JsonSettingsManager.SpecificProcessors
                 }
             }
 
-            return context.Manager.LoadSettings(options.DataSource, context, options.Mode);
+            return await context.Manager.LoadSettingsAsync(options.DataSource, context, options.Mode, token);
         }
     }
 }

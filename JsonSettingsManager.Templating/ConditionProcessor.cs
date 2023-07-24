@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using JsonSettingsManager.SpecificProcessors;
 using JsonSettingsManager.SpecificProcessors.Options;
 using Microsoft.CodeAnalysis.CSharp;
@@ -20,7 +22,8 @@ namespace JsonSettingsManager.Templating
 
         public string KeyWord { get; } = "Condition";
         public bool IsPrefix { get; } = false;
-        public JToken Do(ParseContext context, JToken jOptions, JObject obj, string keyWord)
+        public async Task<JToken> DoAsync(ParseContext context, JToken jOptions, JObject obj, string keyWord,
+            CancellationToken token = default)
         {
             var options = Common.ParseOptions<ConditionOptions>(jOptions, context.Serializer).Single();
 

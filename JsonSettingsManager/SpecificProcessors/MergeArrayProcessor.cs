@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using JsonSettingsManager.DataSources;
 using JsonSettingsManager.SpecificProcessors.Options;
 using Newtonsoft.Json.Linq;
@@ -13,7 +15,8 @@ namespace JsonSettingsManager.SpecificProcessors
         public string KeyWord { get; } = "MergeArrayWith";
         public bool IsPrefix => false;
 
-        public JToken Do(ParseContext context, JToken jOptions, JObject obj, string keyWord)
+        public async Task<JToken> DoAsync(ParseContext context, JToken jOptions, JObject obj, string keyWord,
+            CancellationToken token = default)
         {
             var options = Common.ParseOptions<MergeArrayOptions>(jOptions, context.Serializer).Single();
 
@@ -37,7 +40,7 @@ namespace JsonSettingsManager.SpecificProcessors
 
             JToken otherToken;
 
-            otherToken = context.Manager.LoadSettings(options.DataSource, context, LoadMode.Json);
+            otherToken = await context.Manager.LoadSettingsAsync(options.DataSource, context, LoadMode.Json, token);
 
             var otherArray = otherToken as JArray;
 

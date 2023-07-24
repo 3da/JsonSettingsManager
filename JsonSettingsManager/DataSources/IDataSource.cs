@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using JsonSettingsManager.TypeResolving;
 using Newtonsoft.Json.Linq;
 
@@ -7,6 +9,6 @@ namespace JsonSettingsManager.DataSources
     [ResolveType]
     public interface IDataSource
     {
-        (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context);
+        Task<(JToken, IDataSource)> LoadAsync(IDataSource lastDataSource, LoadMode mode, ParseContext context, CancellationToken token = default);
     }
 }

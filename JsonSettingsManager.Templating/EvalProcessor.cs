@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Dynamic;
 using System.Linq;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using JsonSettingsManager.SpecificProcessors;
 using JsonSettingsManager.SpecificProcessors.Options;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.Templating
@@ -26,7 +21,8 @@ namespace JsonSettingsManager.Templating
 
         public string KeyWord { get; } = "Eval";
         public bool IsPrefix { get; } = false;
-        public JToken Do(ParseContext context, JToken jOptions, JObject obj, string keyWord)
+        public async Task<JToken> DoAsync(ParseContext context, JToken jOptions, JObject obj, string keyWord,
+            CancellationToken token = default)
         {
             var options = Common.ParseOptions<EvalOptions>(jOptions, context.Serializer).Single();
 
@@ -35,8 +31,8 @@ namespace JsonSettingsManager.Templating
 
                 var globals = GlobalsProcessor.Process(_globals, context);
 
-                var result = CSharpScript.EvaluateAsync(options.Expression, globals: globals,
-                    options: ScriptOptions.Default.WithReferences("Microsoft.CSharp")).Result;
+                var result = await CSharpScript.EvaluateAsync(options.Expression, globals: globals,
+                    options: ScriptOptions.Default.WithReferences("Microsoft.CSharp"), cancellationToken: token);
 
                 return result != null ? JToken.FromObject(result) : null;
             }

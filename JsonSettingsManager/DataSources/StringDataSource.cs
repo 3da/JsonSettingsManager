@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.DataSources
@@ -9,7 +9,8 @@ namespace JsonSettingsManager.DataSources
     public class StringDataSource : IDataSource
     {
         public string Text { get; set; }
-        public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context)
+        public async Task<(JToken, IDataSource)> LoadAsync(IDataSource lastDataSource, LoadMode mode, ParseContext context,
+            CancellationToken token)
         {
             switch (mode)
             {

@@ -4,6 +4,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -18,7 +20,8 @@ namespace JsonSettingsManager.DataSources
 
         public Encoding Encoding { get; set; }
 
-        public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context)
+        public async Task<(JToken, IDataSource)> LoadAsync(IDataSource lastDataSource, LoadMode mode,
+            ParseContext context, CancellationToken token)
         {
             if (lastDataSource is ZipDataSource f)
             {
@@ -42,11 +45,11 @@ namespace JsonSettingsManager.DataSources
             else
                 entry = ZipArchive.GetEntry(Path);
 
-            using (var stream = entry.Open())
+            await using (var stream = entry.Open())
             {
                 string text = null;
                 if (mode == LoadMode.Json || mode == LoadMode.Text)
-                    text = new StreamReader(stream, Encoding).ReadToEnd();
+                    text = await new StreamReader(stream, Encoding).ReadToEndAsync();
                 switch (mode)
                 {
                     case LoadMode.Json:
@@ -56,17 +59,17 @@ namespace JsonSettingsManager.DataSources
                     case LoadMode.Bin:
                         using (var memoryStream = new MemoryStream())
                         {
-                            stream.CopyTo(memoryStream);
+                            await stream.CopyToAsync(memoryStream, token);
                             return (JToken.FromObject(memoryStream.ToArray()), this);
                         }
                     case LoadMode.LargeBin:
-                        return (JToken.FromObject(StreamUtils.LoadLargeBytesFromStream(stream)), this);
+                        return (JToken.FromObject(await StreamUtils.LoadLargeBytesFromStreamAsync(stream, token)), this);
                     case LoadMode.Lines:
                         var reader = new StreamReader(stream, Encoding);
                         var lines = new List<string>();
                         while (true)
                         {
-                            var line = reader.ReadLine();
+                            var line = await reader.ReadLineAsync();
                             if (line == null)
                                 break;
 
@@ -82,11 +85,6 @@ namespace JsonSettingsManager.DataSources
 
 
 
-        }
-
-        public IDataSource Clone()
-        {
-            return this;
         }
     }
 }

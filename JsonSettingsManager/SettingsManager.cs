@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using JsonSettingsManager.DataSources;
 using JsonSettingsManager.SpecificProcessors;
 using JsonSettingsManager.TypeResolving;
@@ -51,15 +53,14 @@ namespace JsonSettingsManager
             }
         }
 
-        internal JToken LoadSettings(IDataSource dataSource, ParseContext context, LoadMode mode)
+        internal async Task<JToken> LoadSettingsAsync(IDataSource dataSource, ParseContext context, LoadMode mode, CancellationToken token)
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
-            JToken jToken;
-            (jToken, dataSource) = dataSource.Load(context.DataSource, mode, context);
+            (var jToken, dataSource) = await dataSource.LoadAsync(context.DataSource, mode, context, token);
 
-            return ProcessJToken(jToken, new ParseContext
+            return await ProcessJTokenAsync(jToken, new ParseContext
             {
                 DataSource = dataSource,
                 Manager = this,
@@ -70,10 +71,10 @@ namespace JsonSettingsManager
                 }),
                 Parameters = context.Parameters,
                 FsProvider = context.FsProvider
-            });
+            }, token);
         }
 
-        public JToken LoadSettings(IDataSource dataSource)
+        public async Task<JToken> LoadSettingsAsync(IDataSource dataSource, CancellationToken token = default)
         {
             var parseContext = new ParseContext()
             {
@@ -82,39 +83,39 @@ namespace JsonSettingsManager
                 FsProvider = FsProvider
             };
 
-            return LoadSettings(dataSource, parseContext, LoadMode.Json);
+            return await LoadSettingsAsync(dataSource, parseContext, LoadMode.Json, token);
         }
 
 
 
-        public JToken LoadSettings(string path, string workDir = null)
+        public async Task<JToken> LoadSettingsAsync(string path, string workDir = null, CancellationToken token = default)
         {
             var fi = new FileInfo(path);
             if (fi.Extension == ".zip")
-                return LoadSettingsZip(path, workDir);
+                return await LoadSettingsZipAsync(path, workDir, token);
             else
-                return LoadSettingsJson(path, workDir);
+                return await LoadSettingsJsonAsync(path, workDir, token);
         }
 
-        public T LoadSettings<T>(string path, string workDir = null)
+        public async Task<T> LoadSettingsAsync<T>(string path, string workDir = null, CancellationToken token = default)
         {
             var fi = new FileInfo(path);
             if (fi.Extension == ".zip")
-                return LoadSettingsZip<T>(path, workDir);
+                return await LoadSettingsZipAsync<T>(path, workDir, token);
             else
-                return LoadSettingsJson<T>(path, workDir);
+                return await LoadSettingsJsonAsync<T>(path, workDir, token);
         }
 
-        public JToken LoadSettingsJson(string path, string workDir = null)
+        public async Task<JToken> LoadSettingsJsonAsync(string path, string workDir = null, CancellationToken token = default)
         {
-            return LoadSettings(new FileDataSource() { Path = path, WorkDir = workDir });
+            return await LoadSettingsAsync(new FileDataSource() { Path = path, WorkDir = workDir }, token);
         }
 
-        public T LoadSettingsJson<T>(string path, string workDir = null)
+        public async Task<T> LoadSettingsJsonAsync<T>(string path, string workDir = null, CancellationToken token = default)
         {
-            var token = LoadSettingsJson(path, workDir);
+            var jToken = await LoadSettingsJsonAsync(path, workDir, token);
 
-            return LoadSettings<T>(token);
+            return LoadSettings<T>(jToken);
         }
 
         public T LoadSettings<T>(JToken token)
@@ -125,30 +126,28 @@ namespace JsonSettingsManager
             }));
         }
 
-        public JToken LoadSettingsZip(string path, string workDir = null)
+        public async Task<JToken> LoadSettingsZipAsync(string path, string workDir = null, CancellationToken token = default)
         {
-            using (var stream = File.OpenRead(path))
-            using (var archive = new ZipArchive(stream))
-            {
-                return LoadSettings(new ZipDataSource() { Path = "Main.json", ZipArchive = archive });
-            }
+            await using var stream = File.OpenRead(path);
+            using var archive = new ZipArchive(stream);
+            return await LoadSettingsAsync(new ZipDataSource() { Path = "Main.json", ZipArchive = archive }, token);
         }
 
-        public T LoadSettingsZip<T>(string path, string workDir = null)
+        public async Task<T> LoadSettingsZipAsync<T>(string path, string workDir = null, CancellationToken token = default)
         {
-            var token = LoadSettingsZip(path, workDir);
+            var jToken = await LoadSettingsZipAsync(path, workDir, token);
 
-            return LoadSettings<T>(token);
+            return LoadSettings<T>(jToken);
         }
 
-        private JToken ProcessJToken(JToken jToken, ParseContext context)
+        private async Task<JToken> ProcessJTokenAsync(JToken jToken, ParseContext context, CancellationToken token)
         {
             try
             {
                 if (jToken is JObject jObject)
-                    return ProcessJObject(jObject, context);
+                    return await ProcessJObjectAsync(jObject, context, token);
                 if (jToken is JArray jArray)
-                    return ProcessJArray(jArray, context);
+                    return await ProcessJArrayAsync(jArray, context, token);
 
                 return jToken;
             }
@@ -162,14 +161,14 @@ namespace JsonSettingsManager
 
         }
 
-        private JToken ProcessJArray(JArray jArray, ParseContext context)
+        private async Task<JToken> ProcessJArrayAsync(JArray jArray, ParseContext context, CancellationToken token)
         {
             var anotherArray = new JArray();
-            foreach (var token in jArray.Children())
+            foreach (var jToken in jArray.Children())
             {
                 context.MergeArray = false;
                 JToken p;
-                p = ProcessJToken(token, context);
+                p = await ProcessJTokenAsync(jToken, context, token);
 
                 if (p == null)
                     continue;
@@ -188,7 +187,7 @@ namespace JsonSettingsManager
             return anotherArray;
         }
 
-        private JToken ProcessJObject(JObject jObject, ParseContext context)
+        private async Task<JToken> ProcessJObjectAsync(JObject jObject, ParseContext context, CancellationToken token)
         {
             var specialProperties = jObject.Properties().Where(q => q.Name.StartsWith("@"))
                 .Select(q => new { Name = q.Name.Substring(1), Token = q })
@@ -219,11 +218,11 @@ namespace JsonSettingsManager
                     if (jobj == null)
                         break;
 
-                    var processedOptions = ProcessJToken(specialProperty.Token.Value, context);
+                    var processedOptions = await ProcessJTokenAsync(specialProperty.Token.Value, context, token);
 
                     try
                     {
-                        result = specialProperty.Processor.Do(context, processedOptions, jobj, specialProperty.Name);
+                        result = await specialProperty.Processor.DoAsync(context, processedOptions, jobj, specialProperty.Name, token);
                     }
                     catch (Exception e)
                     {
@@ -238,13 +237,11 @@ namespace JsonSettingsManager
             }
 
 
-            var jobj2 = result as JObject;
-
-            if (jobj2 != null)
+            if (result is JObject jobj2)
             {
                 foreach (var property in jobj2.Properties())
                 {
-                    property.Value = ProcessJToken(property.Value, context);
+                    property.Value = await ProcessJTokenAsync(property.Value, context, token);
                 }
             }
 

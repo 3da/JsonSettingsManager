@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2036
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager", "JsonSettingsManager\JsonSettingsManager.csproj", "{C8AD5E55-5193-46E5-8E65-814A4ADC103A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.Tests", "JsonSettingsManager.Tests\JsonSettingsManager.Tests.csproj", "{2249F1D7-4BE0-441D-9122-6657A1E8B81F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.MongoDb", "JsonSettingsManager.MongoDb\JsonSettingsManager.MongoDb.csproj", "{16EDB392-A637-4426-9929-E582EE0C38B8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.Serialization", "JsonSettingsManager.Serialization\JsonSettingsManager.Serialization.csproj", "{4B54DB44-F8DC-4F38-8583-512314A2D3DB}"
 EndProject
@@ -15,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.Documen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.DocumentationLib.Tests", "JsonSettingsManager.DocumentationLib.Tests\JsonSettingsManager.DocumentationLib.Tests.csproj", "{67D84038-3948-4892-8E25-7A62F6667924}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSettingsManager.Templating", "JsonSettingsManager.Templating\JsonSettingsManager.Templating.csproj", "{8EC1C1AC-3CFF-4789-B8FA-C2D740CAA0A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSettingsManager.Templating", "JsonSettingsManager.Templating\JsonSettingsManager.Templating.csproj", "{8EC1C1AC-3CFF-4789-B8FA-C2D740CAA0A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{2249F1D7-4BE0-441D-9122-6657A1E8B81F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2249F1D7-4BE0-441D-9122-6657A1E8B81F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2249F1D7-4BE0-441D-9122-6657A1E8B81F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16EDB392-A637-4426-9929-E582EE0C38B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16EDB392-A637-4426-9929-E582EE0C38B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16EDB392-A637-4426-9929-E582EE0C38B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16EDB392-A637-4426-9929-E582EE0C38B8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4B54DB44-F8DC-4F38-8583-512314A2D3DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4B54DB44-F8DC-4F38-8583-512314A2D3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B54DB44-F8DC-4F38-8583-512314A2D3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU

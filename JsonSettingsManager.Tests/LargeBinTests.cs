@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using JsonSettingsManager.DataSources;
 using JsonSettingsManager.Serialization;
 using JsonSettingsManager.Serialization.Attributes;
@@ -17,7 +18,7 @@ namespace JsonSettingsManager.Tests
         }
 
         [TestMethod]
-        public void MakeLargeZip()
+        public async Task MakeLargeZip()
         {
             var megabyteBuf = Enumerable.Range(0, 1024 * 1024).Select(q => (byte)(q % 256)).ToArray();
 
@@ -32,12 +33,12 @@ namespace JsonSettingsManager.Tests
             };
 
             var serializer = new SettingsSerializer();
-            serializer.SaveZip(settings, "Large.zip");
+            await serializer.SaveZipAsync(settings, "Large.zip");
 
 
             var settingsManager = new JsonSettingsManager.SettingsManager();
 
-            var result = settingsManager.LoadSettingsZip<Settings>("Large.zip");
+            var result = await settingsManager.LoadSettingsZipAsync<Settings>("Large.zip");
 
             Assert.AreEqual(settings.Message, result.Message);
             Assert.AreEqual(totalSize, result.Content.Sum(q => q.LongLength));

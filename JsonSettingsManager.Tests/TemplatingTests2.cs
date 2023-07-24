@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Text;
+using System.Threading.Tasks;
 using JsonSettingsManager.Templating;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JsonSettingsManager.Tests
@@ -13,7 +11,7 @@ namespace JsonSettingsManager.Tests
     public class TemplatingTests2
     {
         [TestMethod]
-        public void Test2()
+        public async Task Test2()
         {
             var globals = new Gl { };
 
@@ -21,27 +19,27 @@ namespace JsonSettingsManager.Tests
 
             Assert.IsTrue(File.Exists("Data\\Templating2\\Data.bin"));
 
-            var ss1 = manager.LoadSettings(@"Data\Templating2\Settings.json").ToString();
+            var ss1 = (await manager.LoadSettingsAsync(@"Data\Templating2\Settings.json")).ToString();
 
             Assert.IsTrue(File.Exists("Data\\Templating2\\Data.bin"));
 
         }
 
         [TestMethod]
-        public void TestLoadWithParameters()
+        public async Task TestLoadWithParameters()
         {
             var manager = new SettingsManager(new EvalProcessor(null), new ConditionProcessor(null));
 
-            var settings = manager.LoadSettings("Data\\LoadWithParams\\Settings.json");
+            var settings = await manager.LoadSettingsAsync("Data\\LoadWithParams\\Settings.json");
 
-            var settings2 = manager.LoadSettings("Data\\LoadWithParams\\Expected.json");
+            var settings2 = await manager.LoadSettingsAsync("Data\\LoadWithParams\\Expected.json");
 
             Assert.AreEqual(settings2.ToString(), settings.ToString());
 
         }
 
         [TestMethod]
-        public void TestLoadWithParameters2()
+        public async Task TestLoadWithParameters2()
         {
             var globals = new Dictionary<string, object>()
             {
@@ -51,16 +49,16 @@ namespace JsonSettingsManager.Tests
 
             var manager = new SettingsManager(new EvalProcessor(globals), new ConditionProcessor(globals));
 
-            var settings = manager.LoadSettings("Data\\LoadWithParams\\External.json");
+            var settings = await manager.LoadSettingsAsync("Data\\LoadWithParams\\External.json");
 
-            var settings2 = manager.LoadSettings("Data\\LoadWithParams\\Expected2.json");
+            var settings2 = await manager.LoadSettingsAsync("Data\\LoadWithParams\\Expected2.json");
 
             Assert.AreEqual(settings2.ToString(), settings.ToString());
 
         }
 
         [TestMethod]
-        public void TestLoadWithParameters3()
+        public async Task TestLoadWithParameters3()
         {
             var globals = new Dictionary<string, object>()
             {
@@ -70,16 +68,16 @@ namespace JsonSettingsManager.Tests
 
             var manager = new SettingsManager(new EvalProcessor(globals), new ConditionProcessor(globals));
 
-            var settings = manager.LoadSettings("Data\\LoadWithParams\\Settings3.json");
+            var settings = await manager.LoadSettingsAsync("Data\\LoadWithParams\\Settings3.json");
 
-            var settings2 = manager.LoadSettings("Data\\LoadWithParams\\Expected3.json");
+            var settings2 = await manager.LoadSettingsAsync("Data\\LoadWithParams\\Expected3.json");
 
             Assert.AreEqual(settings2.ToString(), settings.ToString());
 
         }
 
         [TestMethod]
-        public void TestLoadWithParameters4()
+        public async Task TestLoadWithParameters4()
         {
             var globals = new Dictionary<string, object>()
             {
@@ -87,9 +85,9 @@ namespace JsonSettingsManager.Tests
 
             var manager = new SettingsManager(new EvalProcessor(globals));
 
-            var settings = manager.LoadSettings("Data\\LoadWithParams\\A4.json");
+            var settings = await manager.LoadSettingsAsync("Data\\LoadWithParams\\A4.json");
 
-            var settings2 = manager.LoadSettings("Data\\LoadWithParams\\E4.json");
+            var settings2 = await manager.LoadSettingsAsync("Data\\LoadWithParams\\E4.json");
 
             Assert.AreEqual(settings2.ToString(), settings.ToString());
 

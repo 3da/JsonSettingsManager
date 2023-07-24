@@ -1,35 +1,35 @@
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.Tests
 {
-	[TestClass]
-	public class CommonTests
-	{
-		private void Test(string expectedPath, string actualPath)
-		{
-			var settingsManager = new SettingsManager();
+    [TestClass]
+    public class CommonTests
+    {
+        private async Task TestAsync(string expectedPath, string actualPath)
+        {
+            var settingsManager = new SettingsManager();
 
-			var settings = settingsManager.LoadSettings(actualPath);
-            
-			var expectedSettings = JToken.Parse(File.ReadAllText(expectedPath));
+            var settings = await settingsManager.LoadSettingsAsync(actualPath);
 
-			Assert.IsTrue(JToken.DeepEquals(expectedSettings, settings));
-		}
+            var expectedSettings = JToken.Parse(await File.ReadAllTextAsync(expectedPath));
 
-		[TestMethod]
-		public void TestComplexSettings()
-		{
-			Test("Data\\ComplexTest\\ExpectedSettings.json", "Data\\ComplexTest\\Settings.json");
+            Assert.IsTrue(JToken.DeepEquals(expectedSettings, settings));
+        }
 
-		}
+        [TestMethod]
+        public async Task TestComplexSettings()
+        {
+            await TestAsync("Data\\ComplexTest\\ExpectedSettings.json", "Data\\ComplexTest\\Settings.json");
+        }
 
-		[TestMethod]
-		public void TestMergeTwoTrees()
-		{
-			Test("Data\\TwoTrees\\ExpectedSettings.json", "Data\\TwoTrees\\Settings.json");
-		}
-	}
+        [TestMethod]
+        public async Task TestMergeTwoTrees()
+        {
+            await TestAsync("Data\\TwoTrees\\ExpectedSettings.json", "Data\\TwoTrees\\Settings.json");
+        }
+    }
 }

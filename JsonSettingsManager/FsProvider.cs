@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace JsonSettingsManager
 {
@@ -13,20 +14,20 @@ namespace JsonSettingsManager
             return File.Exists(path);
         }
 
-        public string LoadTextFile(string path, Encoding encoding)
+        public async Task<string> LoadTextFileAsync(string path, Encoding encoding, CancellationToken token)
         {
-            return File.ReadAllText(path, encoding);
+            return await File.ReadAllTextAsync(path, encoding, token);
         }
 
-        public byte[] LoadBinFile(string path)
+        public async Task<byte[]> LoadBinFileAsync(string path, CancellationToken token)
         {
-            return File.ReadAllBytes(path);
+            return await File.ReadAllBytesAsync(path, token);
         }
 
-        public byte[][] LoadLargeBinFile(string path)
+        public async Task<byte[][]> LoadLargeBinFileAsync(string path, CancellationToken token)
         {
             using var stream = File.OpenRead(path);
-            return StreamUtils.LoadLargeBytesFromStream(stream);
+            return await StreamUtils.LoadLargeBytesFromStreamAsync(stream, token);
         }
     }
 }

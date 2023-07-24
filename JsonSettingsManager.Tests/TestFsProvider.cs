@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace JsonSettingsManager.Tests
 {
@@ -15,20 +17,20 @@ namespace JsonSettingsManager.Tests
             return _fsProvider.FileExists(path);
         }
 
-        public string LoadTextFile(string path, Encoding encoding)
+        public async Task<string> LoadTextFileAsync(string path, Encoding encoding, CancellationToken token)
         {
             List1.Add(path);
-            return _fsProvider.LoadTextFile(path, encoding);
+            return await _fsProvider.LoadTextFileAsync(path, encoding, token);
         }
 
-        public byte[] LoadBinFile(string path)
+        public async Task<byte[]> LoadBinFileAsync(string path, CancellationToken token)
         {
-            return _fsProvider.LoadBinFile(path);
+            return await _fsProvider.LoadBinFileAsync(path, token);
         }
 
-        public byte[][] LoadLargeBinFile(string path)
+        public async Task<byte[][]> LoadLargeBinFileAsync(string path, CancellationToken token)
         {
-            return _fsProvider.LoadLargeBinFile(path);
+            return await _fsProvider.LoadLargeBinFileAsync(path, token);
         }
     }
 }

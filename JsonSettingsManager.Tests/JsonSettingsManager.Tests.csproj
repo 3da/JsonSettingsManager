@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\JsonSettingsManager.MongoDb\JsonSettingsManager.MongoDb.csproj" />
     <ProjectReference Include="..\JsonSettingsManager.Serialization\JsonSettingsManager.Serialization.csproj" />
     <ProjectReference Include="..\JsonSettingsManager.Templating\JsonSettingsManager.Templating.csproj" />
     <ProjectReference Include="..\JsonSettingsManager\JsonSettingsManager.csproj" />

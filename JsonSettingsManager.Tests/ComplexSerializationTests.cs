@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using JsonSettingsManager.DataSources;
 using JsonSettingsManager.Serialization;
 using JsonSettingsManager.Serialization.Attributes;
@@ -34,7 +35,7 @@ namespace JsonSettingsManager.Tests
 
 
         [TestMethod]
-        public void TestTypeNameSerialization()
+        public async Task TestTypeNameSerialization()
         {
             var data = new Human()
             {
@@ -53,17 +54,17 @@ namespace JsonSettingsManager.Tests
 
             var serializer = new SettingsSerializer();
 
-            serializer.SaveJson(data, "TmpResult.json");
+            await serializer.SaveJsonAsync(data, "TmpResult.json");
 
             SerializeTests.CompareJsons(@"Data\SerializationDeep\ExpectedSettings.json", "TmpResult.json");
 
             var manager = new SettingsManager();
 
-            var loadedData = manager.LoadSettings<IUnit>("TmpResult.json");
+            var loadedData = await manager.LoadSettingsAsync<IUnit>("TmpResult.json");
 
             Assert.AreEqual(JsonConvert.SerializeObject(data), JsonConvert.SerializeObject(loadedData));
 
-            var loadedData2 = manager.LoadSettings<Human>("TmpResult.json");
+            var loadedData2 = await manager.LoadSettingsAsync<Human>("TmpResult.json");
 
             Assert.AreEqual(JsonConvert.SerializeObject(data), JsonConvert.SerializeObject(loadedData2));
         }
@@ -92,7 +93,7 @@ namespace JsonSettingsManager.Tests
         };
 
         [TestMethod]
-        public void TestMultipleIntances()
+        public async Task TestMultipleIntances()
         {
 
             var tmpDir = new DirectoryInfo("Tmp");
@@ -104,7 +105,7 @@ namespace JsonSettingsManager.Tests
 
             var serializer = new SettingsSerializer();
 
-            serializer.SaveJson(_settings, @"Tmp\settings.json");
+            await serializer.SaveJsonAsync(_settings, @"Tmp\settings.json");
 
             SerializeTests.CompareJsons(@"Data\SerializationDeep2\ExpectedSettings.json", @"Tmp\settings.json");
             SerializeTests.CompareJsons(@"Data\SerializationDeep2\Ext0000.json", @"Tmp\Ext0000.json");
@@ -125,7 +126,7 @@ namespace JsonSettingsManager.Tests
 
             var serializer = new SettingsSerializer();
 
-            serializer.SaveZip(_settings, @"Tmp.zip");
+            serializer.SaveZipAsync(_settings, @"Tmp.zip");
 
             ZipFile.ExtractToDirectory("Tmp.zip", "Tmp");
 

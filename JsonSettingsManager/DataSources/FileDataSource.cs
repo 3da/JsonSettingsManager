@@ -4,6 +4,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.DataSources
@@ -16,7 +18,8 @@ namespace JsonSettingsManager.DataSources
 
         public Encoding Encoding { get; set; }
 
-        public (JToken, IDataSource) Load(IDataSource lastDataSource, LoadMode mode, ParseContext context)
+        public async Task<(JToken, IDataSource)> LoadAsync(IDataSource lastDataSource, LoadMode mode, ParseContext context,
+            CancellationToken token)
         {
             var newDataSource = new FileDataSource()
             {
@@ -69,15 +72,15 @@ namespace JsonSettingsManager.DataSources
             switch (mode)
             {
                 case LoadMode.Json:
-                    return (JToken.Parse(fsProvider.LoadTextFile(bestSearchPath, newDataSource.Encoding)), newDataSource);
+                    return (JToken.Parse(await fsProvider.LoadTextFileAsync(bestSearchPath, newDataSource.Encoding, token)), newDataSource);
                 case LoadMode.Text:
-                    return (new JValue(fsProvider.LoadTextFile(bestSearchPath, newDataSource.Encoding)), newDataSource);
+                    return (new JValue(await fsProvider.LoadTextFileAsync(bestSearchPath, newDataSource.Encoding, token)), newDataSource);
                 case LoadMode.Bin:
-                    return (JToken.FromObject(fsProvider.LoadBinFile(bestSearchPath)), newDataSource);
+                    return (JToken.FromObject(await fsProvider.LoadBinFileAsync(bestSearchPath, token)), newDataSource);
                 case LoadMode.LargeBin:
-                    return (JToken.FromObject(fsProvider.LoadLargeBinFile(bestSearchPath)), newDataSource);
+                    return (JToken.FromObject(await fsProvider.LoadLargeBinFileAsync(bestSearchPath, token)), newDataSource);
                 case LoadMode.Lines:
-                    var lines = fsProvider.LoadTextFile(bestSearchPath, newDataSource.Encoding)
+                    var lines = (await fsProvider.LoadTextFileAsync(bestSearchPath, newDataSource.Encoding, token))
                         .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
                         .Select(q => (object)q.Trim('\r')).ToArray();
                     return (new JArray(lines), newDataSource);

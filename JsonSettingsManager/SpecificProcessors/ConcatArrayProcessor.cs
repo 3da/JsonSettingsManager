@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.SpecificProcessors
@@ -9,7 +11,8 @@ namespace JsonSettingsManager.SpecificProcessors
     {
         public string KeyWord => "concat-";
         public bool IsPrefix => true;
-        public JToken Do(ParseContext context, JToken jOptions, JObject obj, string keyWord)
+        public async Task<JToken> DoAsync(ParseContext context, JToken jOptions, JObject obj, string keyWord,
+            CancellationToken token = default)
         {
             var propName = keyWord.Substring(KeyWord.Length);
 

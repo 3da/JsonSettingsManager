@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
@@ -9,13 +10,13 @@ namespace JsonSettingsManager.Tests
 	{
 
 		[TestMethod]
-		public void Test()
+		public async Task Test()
 		{
 			var settingsManager = new SettingsManager();
 
-			var settings = settingsManager.LoadSettings(@"Data\HttpTest\Settings.json");
+			var settings = await settingsManager.LoadSettingsAsync(@"Data\HttpTest\Settings.json");
 
-			var expectedSettings = JToken.Parse(File.ReadAllText(@"Data\HttpTest\ExpectedSettings.json"));
+			var expectedSettings = JToken.Parse(await File.ReadAllTextAsync(@"Data\HttpTest\ExpectedSettings.json"));
 
 			Assert.IsTrue(JToken.DeepEquals(expectedSettings, settings));
 		}

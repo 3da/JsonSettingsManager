@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using JsonSettingsManager.DataSources;
 using JsonSettingsManager.Serialization;
 using JsonSettingsManager.Serialization.Attributes;
@@ -68,7 +69,7 @@ i",
         };
 
         [TestMethod]
-        public void TestSerializeJson()
+        public async Task TestSerializeJson()
         {
 
             var serializer = new SettingsSerializer();
@@ -80,7 +81,7 @@ i",
                 Thread.Sleep(100);
             }
 
-            serializer.SaveJson(_settings, @"Tmp\settings.json");
+            await serializer.SaveJsonAsync(_settings, @"Tmp\settings.json");
 
             Assert.IsTrue(File.Exists(@"Tmp\settings.json"));
             Assert.IsTrue(File.Exists(@"Tmp\Users.json"));
@@ -98,18 +99,18 @@ i",
 
             var manager = new SettingsManager();
 
-            var jsonSettings = manager.LoadSettings(@"Tmp\settings");
+            var jsonSettings = await manager.LoadSettingsAsync(@"Tmp\settings");
             var typedSettings = jsonSettings.ToObject<Settings>();
 
             Assert.AreEqual(JsonConvert.SerializeObject(_settings), JsonConvert.SerializeObject(typedSettings));
         }
 
         [TestMethod]
-        public void TestSerializeZip()
+        public async Task TestSerializeZip()
         {
             var serializer = new SettingsSerializer();
 
-            serializer.SaveZip(_settings, @"Tmp.zip");
+            serializer.SaveZipAsync(_settings, @"Tmp.zip");
 
             var tmpDir = new DirectoryInfo("Tmp");
             if (tmpDir.Exists)
@@ -136,7 +137,7 @@ i",
 
             var manager = new SettingsManager();
 
-            var jsonSettings = manager.LoadSettings(@"Tmp.zip");
+            var jsonSettings = await manager.LoadSettingsAsync(@"Tmp.zip");
             var typedSettings = jsonSettings.ToObject<Settings>();
 
             Assert.AreEqual(JsonConvert.SerializeObject(_settings), JsonConvert.SerializeObject(typedSettings));
