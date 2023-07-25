@@ -1,0 +1,11 @@
+﻿{
+  "Binary": {
+    "@LoadFrom": {
+      "DataSource": {
+        "@Name": "FileDataSource",
+        "Path": "Binary.bin"
+      },
+      "Mode": "Bin"
+    }
+  }
+}

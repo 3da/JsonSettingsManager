@@ -72,6 +72,12 @@
     <None Update="Data\LoadModes\Settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\LoadModes\Settings4.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\LoadModes\Settings2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\LoadWithParams\D4.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

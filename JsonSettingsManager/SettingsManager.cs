@@ -41,9 +41,10 @@ namespace JsonSettingsManager
         {
             get
             {
-                var result = new List<JsonConverter>(2)
+                var result = new List<JsonConverter>(3)
                 {
-                    new JsonImplConverter(ServiceProvider)
+                    new JsonImplConverter(ServiceProvider),
+                    new ByteArrayConverter()
                 };
 
                 if (ServiceProvider != null)

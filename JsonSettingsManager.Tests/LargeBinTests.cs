@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using JsonSettingsManager.DataSources;
 using JsonSettingsManager.Serialization;
 using JsonSettingsManager.Serialization.Attributes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 
 namespace JsonSettingsManager.Tests
 {
@@ -44,6 +48,36 @@ namespace JsonSettingsManager.Tests
             Assert.AreEqual(totalSize, result.Content.Sum(q => q.LongLength));
             Assert.AreEqual(0, result.Content[0][0]);
             Assert.AreEqual(255, result.Content.Last().Last());
+        }
+
+        public class Settings2
+        {
+            public byte[][] Binary { get; set; }
+        }
+
+        public class Settings3
+        {
+            public byte[] Binary { get; set; }
+        }
+
+        [TestMethod]
+        public async Task LoadLargeBin()
+        {
+            var expected = Encoding.UTF8.GetBytes("test1488");
+
+            var manager = new SettingsManager();
+            var settings = await manager.LoadSettingsAsync<Settings2>(@"Data\LoadModes\Settings2.json");
+
+            Assert.IsTrue(expected.SequenceEqual(settings.Binary[0]));
+
+            var settings3 = await manager.LoadSettingsAsync<Settings3>(@"Data\LoadModes\Settings2.json");
+
+            Assert.IsTrue(expected.SequenceEqual(settings3.Binary));
+
+            settings = await manager.LoadSettingsAsync<Settings2>(@"Data\LoadModes\Settings4.json");
+
+            Assert.IsTrue(expected.SequenceEqual(settings.Binary[0]));
+
         }
     }
 }
