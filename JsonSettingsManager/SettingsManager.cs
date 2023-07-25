@@ -214,15 +214,14 @@ namespace JsonSettingsManager
             {
                 foreach (var specialProperty in specialProperties)
                 {
-                    var jobj = result as JObject;
-                    if (jobj == null)
+                    if (result is not JObject jobj)
                         break;
 
                     var processedOptions = await ProcessJTokenAsync(specialProperty.Token.Value, context, token);
 
                     try
                     {
-                        result = await specialProperty.Processor.DoAsync(context, processedOptions, jobj, specialProperty.Name, token);
+                        result = await specialProperty.Processor!.DoAsync(context, processedOptions, jobj, specialProperty.Name, token);
                     }
                     catch (Exception e)
                     {
@@ -239,10 +238,10 @@ namespace JsonSettingsManager
 
             if (result is JObject jobj2)
             {
-                foreach (var property in jobj2.Properties())
+                await Task.WhenAll(jobj2.Properties().Select(async property =>
                 {
                     property.Value = await ProcessJTokenAsync(property.Value, context, token);
-                }
+                }));
             }
 
             return result;

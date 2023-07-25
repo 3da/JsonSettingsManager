@@ -36,7 +36,7 @@ namespace JsonSettingsManager.Tests
                 "Data\\ComplexTest\\Merge2.json"
             };
 
-            Assert.IsTrue(fsProvider.List1.SequenceEqual(expected));
+            Assert.IsTrue(fsProvider.List1.OrderBy(q=>q).SequenceEqual(expected.OrderBy(q => q)));
         }
     }
 }
