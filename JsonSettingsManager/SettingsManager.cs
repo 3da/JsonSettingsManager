@@ -239,10 +239,10 @@ namespace JsonSettingsManager
 
             if (result is JObject jobj2)
             {
-                await Task.WhenAll(jobj2.Properties().Select(async property =>
+                foreach (var property in jobj2.Properties())
                 {
                     property.Value = await ProcessJTokenAsync(property.Value, context, token);
-                }));
+                }
             }
 
             return result;
