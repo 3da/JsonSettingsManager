@@ -94,7 +94,7 @@ i",
             CompareJsons(@"Data\Serialization\Users.json", @"Tmp\Users.json");
             CompareJsons(@"Data\Serialization\Roles.json", @"Tmp\Roles.json");
             CompareBytes(@"Data\Serialization\Data.bin", @"Tmp\Data.bin");
-            CompareBytes(@"Data\Serialization\Text.txt", @"Tmp\Text.txt");
+            CompareLines(@"Data\Serialization\Text.txt", @"Tmp\Text.txt");
             CompareLines(@"Data\Serialization\Lines.txt", @"Tmp\Lines.txt");
 
             var manager = new SettingsManager();
@@ -132,7 +132,7 @@ i",
             CompareJsons(@"Data\Serialization\Users.json", @"Tmp\Users.json");
             CompareJsons(@"Data\Serialization\Roles.json", @"Tmp\Roles.json");
             CompareBytes(@"Data\Serialization\Data.bin", @"Tmp\Data.bin");
-            CompareBytes(@"Data\Serialization\Text.txt", @"Tmp\Text.txt");
+            CompareLines(@"Data\Serialization\Text.txt", @"Tmp\Text.txt");
             CompareLines(@"Data\Serialization\Lines.txt", @"Tmp\Lines.txt");
 
             var manager = new SettingsManager();
