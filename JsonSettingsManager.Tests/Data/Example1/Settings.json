@@ -1,0 +1,16 @@
+﻿{
+  "NormalProperty": "HelloWorld",
+  "Colors": {
+    "@LoadFrom": "Colors"
+  },
+  "Websites": [
+    "google.com",
+    {
+      "@MergeArrayWith": "Websites"
+    }
+  ],
+  "RemoteService": {
+    "Url": "http://localhost:9999/",
+    "@MergeWith": "RemoteCredentials"
+  }
+}

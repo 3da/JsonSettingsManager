@@ -1,0 +1,14 @@
+﻿{
+  "NormalProperty": "HelloWorld",
+  "Colors": [ "Red", "Green", "Blue" ],
+  "Websites": [
+    "google.com",
+    "microsoft.com",
+    "apple.com"
+  ],
+  "RemoteService": {
+    "UserName": "adam",
+    "Password": "sandler",
+    "Url": "http://localhost:9999/"
+  }
+}

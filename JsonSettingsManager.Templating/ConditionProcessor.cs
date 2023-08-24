@@ -32,8 +32,8 @@ namespace JsonSettingsManager.Templating
 
                 var globals = GlobalsProcessor.Process(_globals, context);
 
-                var result = CSharpScript.EvaluateAsync<bool>(options.If, globals: globals,
-                    options: ScriptOptions.Default.WithReferences("Microsoft.CSharp")).Result;
+                var result = await CSharpScript.EvaluateAsync<bool>(options.If, globals: globals,
+                    options: ScriptOptions.Default.WithReferences("Microsoft.CSharp"), cancellationToken: token);
 
                 return result ? options.Then : options.Else;
             }

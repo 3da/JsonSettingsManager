@@ -51,6 +51,21 @@
     <None Update="Data\ComplexTest\Settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Example1\Colors.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Example1\Websites.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Example1\RemoteCredentials.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Example1\ExpectedSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Example1\Settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\HttpTest\ExpectedSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

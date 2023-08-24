@@ -69,7 +69,7 @@ namespace JsonSettingsManager.DataSources
                         var lines = new List<string>();
                         while (true)
                         {
-                            var line = await reader.ReadLineAsync();
+                            var line = await reader.ReadLineAsync(token);
                             if (line == null)
                                 break;
 
